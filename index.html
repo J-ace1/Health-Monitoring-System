@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitalAI | Smart Health Monitor</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🩺 Vital<span>AI</span></div>
+        <nav>
+            <ul>
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">History</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </nav>
+        <div class="status-indicator">
+            <span id="connection-dot" style="background-color: gray; display: inline-block; width: 10px; height: 10px; border-radius: 50%;"></span> 
+            <span id="status-text">Connecting...</span>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <section class="metrics-grid">
+            <div class="card" id="hr-card">
+                <h3>Heart Rate</h3>
+                <div class="value-container">
+                    <span class="value" id="hr-value">--</span>
+                    <span class="unit">BPM</span>
+                </div>
+                <p class="status">Status: <span id="hr-status">Steady</span></p>
+            </div>
+
+            <div class="card" id="spo2-card">
+                <h3>Oxygen (SpO<sub>2</sub>)</h3>
+                <div class="value-container">
+                    <span class="value" id="spo2-value">--</span>
+                    <span class="unit">%</span>
+                </div>
+                <p class="status">Status: <span id="spo2-status">Optimal</span></p>
+            </div>
+
+            <div class="card" id="temp-card">
+                <h3>Body Temp</h3>
+                <div class="value-container">
+                    <span class="value" id="temp-value">--</span>
+                    <span class="unit">°C</span>
+                </div>
+                <p class="status">Status: <span id="temp-status">Normal</span></p>
+            </div>
+        </section>
+
+        <section class="lower-grid">
+            <div class="chart-container">
+                <h3>Live Vital Stream</h3>
+                <canvas id="vitalChart"></canvas>
+            </div>
+
+            <aside class="ai-sidebar">
+                <h3> AI Health Insights</h3>
+                <div id="ai-messages">
+                    <p class="ai-msg" id="ai-status">Awaiting data stream...</p>
+                </div>
+                <button class="action-btn">Download Full Report</button>
+            </aside>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 VitalAI Health Systems. End-to-End Encrypted.</p>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a> | <a href="#">Support</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
