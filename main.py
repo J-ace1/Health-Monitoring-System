@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import random
@@ -10,7 +10,6 @@ from typing import Dict, Union
 app = FastAPI()
 
 # --- 1. CORS SETTINGS ---
-# Essential for allowing your HTML file to talk to this Python server
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,75 +18,71 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- 2. DATA STORAGE ---
-# This dictionary holds the latest "state" of your health monitor
-latest_vitals: Dict[str, Union[int, float, str]] = {
-    "hr": 75,
-    "spo2": 98,
+# --- 2. PERSISTENT STATE ---
+# We use a global state to keep track of the "drifting" values
+state = {
+    "hr": 72.0,
+    "spo2": 98.0,
     "temp": 36.6,
-    "status": "System Initializing..."
+    "max_hr_limit": 150 # Default limit
 }
 
 # --- 3. AUTO-LAUNCH DASHBOARD ---
-# This function triggers when the server starts
 @app.on_event("startup")
 async def launch_dashboard():
-    # Finds 'index.html' in the same folder as this script
     html_file = Path(__file__).parent / "index.html"
-    
-    # Wait 1 second to ensure the server is fully ready
-    await asyncio.sleep(1)
-    
-    # Check if the file exists before trying to open it
+    await asyncio.sleep(1.5)
     if html_file.exists():
-        print(f"Opening Dashboard: {html_file.absolute()}")
         webbrowser.open(f"file://{html_file.absolute()}")
-    else:
-        print("Warning: index.html not found in the current directory.")
 
 # --- 4. ENDPOINTS ---
-
-@app.get("/")
-async def root():
-    """Home route to verify the server is alive."""
-    return {
-        "message": "Health Monitor API is Online", 
-        "endpoints": {"data": "/vitals", "docs": "/docs"}
-    }
 
 @app.get("/vitals")
 async def get_vitals():
     """
-    This is the heart of the backend. 
-    It simulates data and applies basic AI logic.
+    Generates realistic, smoothed health data using Random Walk.
     """
-    global latest_vitals
+    global state
     
-    # Simulate reading from sensors (Later replaced by real IoT data)
-    hr = random.randint(70, 95)
-    spo2 = random.randint(96, 100)
-    temp = round(random.uniform(36.4, 37.2), 1)
+    # Smooth Drifting (Random Walk)
+    # Heart rate drifts by +/- 2 BPM, clamped between 60 and 160
+    state["hr"] = max(60, min(160, state["hr"] + random.uniform(-2, 2)))
+    
+    # SpO2 drifts slightly, clamped between 94 and 100
+    state["spo2"] = max(94, min(100, state["spo2"] + random.uniform(-0.2, 0.2)))
+    
+    # Temp drifts by 0.1 increments
+    state["temp"] = max(36.1, min(39.0, state["temp"] + random.uniform(-0.05, 0.05)))
 
-    # Basic AI Logic / Thresholding
+    # AI Status Logic
     status = "Normal"
-    if hr > 90:
-        status = "Elevated Heart Rate Detected"
-    elif spo2 < 95:
-        status = "Low Oxygen Levels"
-    elif temp > 37.5:
-        status = "High Temperature Warning"
+    if state["hr"] > state["max_hr_limit"]:
+        status = f"CRITICAL: Heart Rate above {state['max_hr_limit']} BPM"
+    elif state["hr"] > 100:
+        status = "Alert: Tachycardia (Resting)"
+    elif state["spo2"] < 95:
+        status = "Warning: Low Oxygen Saturation"
+    elif state["temp"] > 37.8:
+        status = "Warning: Fever detected"
 
-    # Update our storage
-    latest_vitals = {
-        "hr": hr,
-        "spo2": spo2,
-        "temp": temp,
+    return {
+        "hr": round(state["hr"]),
+        "spo2": round(state["spo2"], 1),
+        "temp": round(state["temp"], 1),
         "status": status
     }
-    
-    return latest_vitals
 
-# --- 5. EXECUTION ---
+@app.post("/update_settings")
+async def update_settings(config: Dict = Body(...)):
+    """
+    Endpoint to receive settings from your HTML page.
+    """
+    global state
+    if "max_hr" in config:
+        state["max_hr_limit"] = int(config["max_hr"])
+        print(f"Backend updated: Max HR limit set to {state['max_hr_limit']}")
+    return {"message": "Settings updated successfully"}
+
 if __name__ == "__main__":
-    # Start the server on localhost port 8000
+    print("VitalAI Backend running at http://127.0.0.1:8000")
     uvicorn.run(app, host="127.0.0.1", port=8000)
