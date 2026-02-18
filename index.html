@@ -5,25 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="images/img1.png">
     <title>VitalAI | Smart Health Monitor</title>
+    
     <link rel="stylesheet" href="style.css">
+    
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-
-    <header class="main-header">
+<body class="dark-mode"> <header class="main-header">
         <nav class="nav-container">
             <div class="logo">
-                <a href="#" style="text-decoration: none; color: inherit;">🩺 Vital<span>AI</span></a>
+                <a href="index.html" style="text-decoration: none; color: inherit;">🩺 Vital<span>AI</span></a>
             </div>
 
             <ul class="nav-links" id="nav-menu">
-                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="index.html" class="active">Dashboard</a></li>
                 <li><a href="history.html">History</a></li>
                 <li><a href="settings.html">Settings</a></li>
                 <li class="status-indicator">
                     <span id="connection-dot"></span> 
-                    <span id="status-text">Connecting...</span>
+                    <span id="status-text">Sensor Offline</span>
                 </li>
             </ul>
 
@@ -42,17 +42,37 @@
 
     <main class="dashboard-container">
         <section class="metrics-grid">
-            <div class="card" id="hr-card">
-                <h3>Heart Rate</h3>
+            
+            <div class="card scanner-card">
+                <h3><i data-lucide="camera"></i> AI Bio-Scan</h3>
+                <p class="status-msg">Cover camera & flash with finger</p>
+                
+                <div class="scanner-container">
+                    <video id="vitals-video" autoplay playsinline style="display:none;"></video>
+                    <canvas id="vitals-canvas" width="120" height="120"></canvas>
+                </div>
+                
+                <button id="start-scan" class="action-btn primary">Start 20s Scan</button>
+                <div id="scan-progress">Ready to monitor</div>
+            </div>
+
+            <div class="card vital-card" id="hr-card">
+                <div class="card-header">
+                    <h4>Heart Rate</h4>
+                    <i data-lucide="heart" class="icon-red"></i>
+                </div>
                 <div class="value-container">
                     <span class="value" id="hr-value">--</span>
                     <span class="unit">BPM</span>
                 </div>
-                <p class="status">Status: <span id="hr-status">Steady</span></p>
+                <p class="status">Status: <span id="hr-status">Waiting...</span></p>
             </div>
 
-            <div class="card" id="spo2-card">
-                <h3>Oxygen (SpO2)</h3>
+            <div class="card vital-card" id="spo2-card">
+                <div class="card-header">
+                    <h4>Oxygen (SpO<sub>2</sub>)</h4>
+                    <i data-lucide="droplets" class="icon-blue"></i>
+                </div>
                 <div class="value-container">
                     <span class="value" id="spo2-value">--</span>
                     <span class="unit">%</span>
@@ -60,89 +80,36 @@
                 <p class="status">Status: <span id="spo2-status">Optimal</span></p>
             </div>
 
-            <div class="card" id="temp-card">
-                <h3>Body Temp</h3>
-                <div class="value-container">
-                    <span class="value" id="temp-value">--</span>
-                    <span class="unit">°C</span>
+            <div class="card vital-card" id="resp-card">
+                <div class="card-header">
+                    <h4>Breathing</h4>
+                    <i data-lucide="wind" class="icon-green"></i>
                 </div>
-                <p class="status">Status: <span id="temp-status">Normal</span></p>
+                <div class="value-container">
+                    <span class="value" id="resp-value">--</span>
+                    <span class="unit">BrPM</span>
+                </div>
+                <p class="status">Status: <span id="resp-status">Normal</span></p>
             </div>
+
         </section>
 
         <section class="lower-grid">
-            <div class="chart-container">
-                <h3>Live Vital Stream</h3>
-                <canvas id="vitalChart"></canvas>
+            <div class="chart-container card">
+                <h3>Live PPG Stream</h3>
+                <div class="canvas-wrapper">
+                    <canvas id="vitalChart"></canvas>
+                </div>
             </div>
 
-            <aside class="ai-sidebar">
+            <aside class="ai-sidebar card">
                 <h3>AI Health Insights</h3>
                 <div id="ai-messages">
-                    <p class="ai-msg" id="ai-status">Awaiting data stream...</p>
+                    <p class="ai-msg" id="ai-status">Place finger on camera to begin real-time analysis.</p>
                 </div>
-                <button class="action-btn">Download Full Report</button>
-            </aside>
-        </section>
-    </main>
-
-</body>
-</html>
-
-    <main class="dashboard-container">
-        <section class="metrics-grid">
-            <div class="card scanner-card">
-    <h3><i data-lucide="camera"></i> AI Camera Scan</h3>
-    <p class="status">Place finger over camera and flash</p>
-    
-    <div class="scanner-container">
-        <video id="vitals-video" autoplay playsinline style="display:none;"></video>
-        <canvas id="vitals-canvas" width="100" height="100" style="border-radius: 50%; border: 3px solid var(--accent-green);"></canvas>
-    </div>
-    
-    <button id="start-scan" class="action-btn">Start 30s Scan</button>
-    <div id="scan-progress" style="margin-top:10px; color: var(--text-secondary);"></div>
-</div>
-            <div class="card" id="hr-card">
-                <h3>Heart Rate</h3>
-                <div class="value-container">
-                    <span class="value" id="hr-value">--</span>
-                    <span class="unit">BPM</span>
-                </div>
-                <p class="status">Status: <span id="hr-status">Steady</span></p>
-            </div>
-
-            <div class="card" id="spo2-card">
-                <h3>Oxygen (SpO<sub>2</sub>)</h3>
-                <div class="value-container">
-                    <span class="value" id="spo2-value">--</span>
-                    <span class="unit">%</span>
-                </div>
-                <p class="status">Status: <span id="spo2-status">Optimal</span></p>
-            </div>
-
-            <div class="card" id="temp-card">
-                <h3>Body Temp</h3>
-                <div class="value-container">
-                    <span class="value" id="temp-value">--</span>
-                    <span class="unit">°C</span>
-                </div>
-                <p class="status">Status: <span id="temp-status">Normal</span></p>
-            </div>
-        </section>
-
-        <section class="lower-grid">
-            <div class="chart-container">
-                <h3>Live Vital Stream</h3>
-                <canvas id="vitalChart"></canvas>
-            </div>
-
-            <aside class="ai-sidebar">
-                <h3> AI Health Insights</h3>
-                <div id="ai-messages">
-                    <p class="ai-msg" id="ai-status">Awaiting data stream...</p>
-                </div>
-                <button class="action-btn">Download Full Report</button>
+                <button class="action-btn secondary" id="download-report">
+                    <i data-lucide="download"></i> Download Report
+                </button>
             </aside>
         </section>
     </main>
@@ -195,7 +162,6 @@
         <p>&copy; 2026 HealthMonitor Inc. All rights reserved.</p>
         </div>
     </footer>
-
 
     <script src="script.js"></script>
 </body>

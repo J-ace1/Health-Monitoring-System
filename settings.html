@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/img1.png">
     <title>VitalAI | Settings</title>
     <link rel="stylesheet" href="settings.css">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -16,6 +17,7 @@
             </div>
             <ul class="nav-links" id="nav-menu">
                 <li><a href="index.html">Dashboard</a></li>
+                <li><a href="history.html">History</a></li>
                 <li><a href="settings.html" style="color: var(--accent-green);">Settings</a></li>
                 <li class="status-indicator">
                     <span id="connection-dot"></span> 
@@ -46,13 +48,25 @@
             </aside>
 
             <section class="settings-content">
+                
                 <div id="profile" class="settings-section active">
                     <div class="card">
                         <h3>Health Profile</h3>
                         <div class="form-row">
-                            <div class="form-group"><label>Age</label><input type="number" value="28"></div>
-                            <div class="form-group"><label>Sex</label><select><option>Male</option><option>Female</option></select></div>
+                            <div class="form-group">
+                                <label for="user-age">Age</label>
+                                <input type="number" id="user-age" placeholder="e.g. 28">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-sex">Sex</label>
+                                <select id="user-sex">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
                         </div>
+                        <button class="action-btn" id="save-profile" style="margin-top: 20px;">Save Profile</button>
                     </div>
                 </div>
 
@@ -60,9 +74,10 @@
                     <div class="card">
                         <h3>Vital Alerts</h3>
                         <div class="form-group">
-                            <label>Max BPM: <span id="hr-label">150</span></label>
-                            <input type="range" min="100" max="220" value="150" class="slider" oninput="document.getElementById('hr-label').innerText = this.value">
+                            <label>Max BPM Threshold: <span id="hr-label">150</span></label>
+                            <input type="range" id="hr-threshold" min="100" max="220" value="150" class="slider" oninput="document.getElementById('hr-label').innerText = this.value">
                         </div>
+                        <p style="font-size: 0.8rem; color: var(--text-secondary);">The AI will notify you if your heart rate exceeds this value during a scan.</p>
                     </div>
                 </div>
 
@@ -71,28 +86,54 @@
                         <h3>Device Config</h3>
                         <div class="form-group">
                             <label>Connection Type</label>
-                            <select><option>Bluetooth</option><option>WiFi</option></select>
+                            <select><option>Camera Sensor (Built-in)</option><option>Bluetooth Wearable</option></select>
                         </div>
-                        <button class="action-btn">Scan for Device</button>
+                        <button class="action-btn">Scan for External Devices</button>
                     </div>
                 </div>
 
                 <div id="privacy" class="settings-section">
                     <div class="card">
-                        <h3>Privacy</h3>
-                        <p>Manage your data sharing and history encryption.</p>
-                        <button class="action-btn" style="background: #ff4b4b; color: white; margin-top: 10px;">Clear Data</button>
+                        <h3>Privacy & Data</h3>
+                        <p>All biometric data is stored locally in your browser and is never uploaded to a cloud server.</p>
+                        <button class="action-btn" id="clear-data-btn" style="background: #ff4b4b; color: white; margin-top: 10px;">Clear All Local Data</button>
                     </div>
                 </div>
+
             </section>
         </div>
     </main>
 
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>About VitalAI</h4>
+                <p>Real-time health monitoring using advanced AI computer vision. Track your vitals anytime, anywhere.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="history.html">History</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <p>Email: support@vitalai.io</p>
+                <p>Address: 123 Wellness Ave, Healthy City</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 VitalAI Inc. All rights reserved.</p>
+        </div>
+    </footer>
+
     <script>
-        // 1. Initialize Icons
+        // --- 1. Initialize Icons ---
         lucide.createIcons();
 
-        // 2. Section Switcher Logic
+        // --- 2. Section Switcher Logic ---
         function showSection(sectionId, element) {
             document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active-tab'));
@@ -101,76 +142,69 @@
             element.classList.add('active-tab');
         }
 
-        // 3. Persistent Theme Toggle Logic
+        // --- 3. Persistent Settings Logic (The Fix) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const ageInput = document.getElementById('user-age');
+            const sexInput = document.getElementById('user-sex');
+            const saveBtn = document.getElementById('save-profile');
+            const hrSlider = document.getElementById('hr-threshold');
+            const hrLabel = document.getElementById('hr-label');
+            const clearBtn = document.getElementById('clear-data-btn');
+
+            // LOAD: Get data from LocalStorage
+            const savedAge = localStorage.getItem('user_age') || "";
+            const savedSex = localStorage.getItem('user_sex') || "Male";
+            const savedMaxHR = localStorage.getItem('max_hr') || "150";
+
+            if (ageInput) ageInput.value = savedAge;
+            if (sexInput) sexInput.value = savedSex;
+            if (hrSlider) {
+                hrSlider.value = savedMaxHR;
+                hrLabel.innerText = savedMaxHR;
+            }
+
+            // SAVE: Profile Info
+            saveBtn?.addEventListener('click', () => {
+                localStorage.setItem('user_age', ageInput.value);
+                localStorage.setItem('user_sex', sexInput.value);
+                
+                saveBtn.innerText = "Profile Saved! ✓";
+                saveBtn.style.background = "#00ff88";
+                saveBtn.style.color = "#000";
+                
+                setTimeout(() => {
+                    saveBtn.innerText = "Save Profile";
+                    saveBtn.style.background = ""; 
+                    saveBtn.style.color = "";
+                }, 2000);
+            });
+
+            // SAVE: Slider data on release
+            hrSlider?.addEventListener('change', () => {
+                localStorage.setItem('max_hr', hrSlider.value);
+            });
+
+            // DELETE: Clear Storage
+            clearBtn?.addEventListener('click', () => {
+                if(confirm("Warning: This will delete your age, settings, and all scan history. Continue?")) {
+                    localStorage.clear();
+                    window.location.reload();
+                }
+            });
+        });
+
+        // --- 4. Theme & Mobile Logic ---
         const themeBtn = document.getElementById('theme-toggle');
-        
-        // Check for saved theme on load
-        if (localStorage.getItem('theme') === 'light') {
-            document.body.classList.add('light-mode');
-        }
+        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
 
         themeBtn.addEventListener('click', () => {
             document.body.classList.toggle('light-mode');
-            // Save state so it doesn't break when navigating pages
-            const isLight = document.body.classList.contains('light-mode');
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
         });
 
-        // 4. Mobile Menu
         document.getElementById('mobile-menu-btn').addEventListener('click', () => {
             document.getElementById('nav-menu').classList.toggle('active');
         });
     </script>
 </body>
-
-</body>
-<footer>
-     <div class="footer-container">
-        <div class="footer-section">
-      <h4>About Us</h4>
-      <p>We provide real-time health monitoring solutions to help individuals and professionals track vital signs and improve wellness outcomes.</p>
-        </div>
-
-     <div class="footer-section">
-      <h4>Quick Links</h4>
-      <ul>
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="/features">Features</a></li>
-        <li><a href="/pricing">Pricing</a></li>
-        <li><a href="/contact">Contact</a></li>
-      </ul>
-        </div>
-
-        <div class="footer-section">
-      <h4>Resources</h4>
-      <ul>
-        <li><a href="/blog">Health Blog</a></li>
-        <li><a href="/faq">FAQs</a></li>
-        <li><a href="/support">Support Center</a></li>
-        <li><a href="/privacy-policy">Privacy Policy</a></li>
-      </ul>
-            </div>
-
-        <div class="footer-section">
-      <h4>Contact</h4>
-      <p>Email: support@healthmonitor.com</p>
-      <p>Phone: +1 (800) 555-1234</p>
-      <p>Address: 123 Wellness Ave, Healthy City, HC 45678</p>
-        </div>
-
-        <div class="footer-section">
-      <h4>Follow Us</h4>
-      <div class="social-icons">
-        <a href="#"><img src="/icons/facebook.svg" alt="Facebook"></a>
-        <a href="#"><img src="/icons/twitter.svg" alt="Twitter"></a>
-        <a href="#"><img src="/icons/linkedin.svg" alt="LinkedIn"></a>
-      </div>
-        </div>
-        </div>
-
-        <div class="footer-bottom">
-        <p>&copy; 2026 HealthMonitor Inc. All rights reserved.</p>
-        </div>
-</footer>
-
 </html>
