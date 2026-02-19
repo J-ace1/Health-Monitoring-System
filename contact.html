@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/img1.png">
+    <title>VitalAI | Contact Us</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="contact.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header class="main-header">
+        <nav class="nav-container">
+            <div class="logo"><a href="index.html">🩺 Vital<span>AI</span></a></div>
+            <ul class="nav-links" id="nav-menu">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="history.html">History</a></li>
+                <li><a href="settings.html">Settings</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+            <button class="mobile-toggle" id="mobile-menu-btn"><i data-lucide="menu"></i></button>
+        </nav>
+    </header>
+
+    <main class="contact-container">
+        <section class="contact-card">
+            <div class="contact-info">
+                <h2>Get in Touch</h2>
+                <p>Have questions about your health data or need technical support? Our team is here to help.</p>
+                <div class="info-item">
+                    <i data-lucide="mail"></i>
+                    <span>support@vitalai.io</span>
+                </div>
+                <div class="info-item">
+                    <i data-lucide="phone"></i>
+                    <span>+1 (800) 555-1234</span>
+                </div>
+            </div>
+
+            <form action="https://formsubmit.co/nathankimutai13@gmail.com" method="POST" class="contact-form">
+                 <input type="text" name="name" placeholder="Name" required>
+                 <input type="email" name="email" placeholder="Email" required>
+                <textarea name="message" placeholder="Message" required></textarea>
+    
+                <button type="submit" class="action-btn">Send Message</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>About Us</h4>
+                <p>We provide real-time health monitoring solutions to help individuals and professionals track vital signs and improve wellness outcomes.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="history.html">History</a></li>
+                    <li><a href="settings.html">Settings</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="history.html">Health Blog</a></li>
+                    <li><a href="contact.html">Support Center</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: support@healthmonitor.com</p>
+                <p>Phone: +1 (800) 555-1234</p>
+                <p>Address: 123 Wellness Ave, Healthy City, HC 45678</p>
+            </div>
+            <div class="footer-section">
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                    <a href="#"><i data-lucide="facebook"></i></a>
+                    <a href="#"><i data-lucide="twitter"></i></a>
+                    <a href="#"><i data-lucide="linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HealthMonitor Inc. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        // Mobile Menu Toggle
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const navMenu = document.getElementById('nav-menu');
+        mobileBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

@@ -117,19 +117,17 @@ function analyzeFrame() {
 
 // 4. Data Persistence (History Logic)
 function saveScanToHistory() {
-    // Attempt to get values from the UI
     const hr = document.getElementById('hr-value').innerText;
     const spo2 = document.getElementById('spo2-value').innerText;
     const resp = document.getElementById('resp-value').innerText;
 
-    // VALIDATION: Don't save if the data is empty or default
     if (hr === "--" || hr === "0" || isNaN(parseInt(hr))) {
         console.log("History Save Skipped: No valid data found.");
         return;
     }
 
     const newEntry = {
-        id: Date.now(), // Unique ID for each entry
+        id: Date.now(),
         date: new Date().toLocaleDateString(),
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         hr: hr,
@@ -137,16 +135,9 @@ function saveScanToHistory() {
         resp: resp
     };
 
-    // 1. Get existing data
     let history = JSON.parse(localStorage.getItem('vitalAI_History')) || [];
-    
-    // 2. Add new entry to the top
     history.unshift(newEntry);
-    
-    // 3. Limit history to the last 50 entries (prevent browser slowdown)
     if (history.length > 50) history.pop();
-
-    // 4. Save
     localStorage.setItem('vitalAI_History', JSON.stringify(history));
     console.log("Success: Scan saved to localStorage.", newEntry);
 }
@@ -250,19 +241,46 @@ function stopScan() {
     isScanning = false;
     document.querySelector('.scanner-card')?.classList.remove('scanning');
     document.getElementById('start-scan').innerText = "Start New Scan";
-    
-    // Save the final results to history
     saveScanToHistory();
-
     if (video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
 }
 
 // 7. Global Init
 document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
+
+    // --- MOBILE NAVIGATION LOGIC ---
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const navMenu = document.getElementById('nav-menu');
+
+    if (mobileBtn && navMenu) {
+        mobileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navMenu.classList.toggle('active');
+            
+            // Toggle icon between menu and x
+            const icon = mobileBtn.querySelector('i');
+            if (navMenu.classList.contains('active')) {
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
+        });
+
+        // Close menu if user clicks a link (needed for navigation to work)
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+    }
+
+    // Standard Buttons
     document.getElementById('start-scan')?.addEventListener('click', startCameraScan);
     document.getElementById('download-report')?.addEventListener('click', downloadHealthReport);
 
+    // Theme Logic
     if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
     document.getElementById('theme-toggle')?.addEventListener('click', () => {
         document.body.classList.toggle('light-mode');

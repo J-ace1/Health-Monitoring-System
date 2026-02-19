@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/img1.png">
+    <title>Privacy Policy | VitalAI</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="privacy.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="privacy-page">
+
+    <header class="main-header">
+        <nav class="nav-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: inherit;">🩺 Vital<span>AI</span></a>
+            </div>
+            <ul class="nav-links" id="nav-menu">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="history.html">History</a></li>
+                <li><a href="settings.html">Settings</a></li>
+                <li class="status-indicator">
+                    <span id="connection-dot"></span> 
+                    <span id="status-text">System Active</span>
+                </li>
+            </ul>
+            <div class="header-controls">
+                <button id="theme-toggle" aria-label="Toggle Theme">
+                    <i data-lucide="sun" class="sun-icon"></i>
+                    <i data-lucide="moon" class="moon-icon"></i>
+                </button>
+                <button class="mobile-toggle" id="mobile-menu-btn">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="privacy-container">
+        <div class="privacy-layout">
+            <aside class="privacy-sidebar">
+                <h3>Contents</h3>
+                <ul>
+                    <li><a href="#data-collection">1. Data Collection</a></li>
+                    <li><a href="#camera-usage">2. Camera Usage</a></li>
+                    <li><a href="#local-storage">3. Local Storage</a></li>
+                    <li><a href="#user-rights">4. Your Rights</a></li>
+                </ul>
+            </aside>
+
+            <article class="privacy-content">
+                <h1>Privacy Policy</h1>
+                <p class="last-updated">Last Updated: February 2026</p>
+
+                <section id="introduction">
+                    <p>At VitalAI, we take your health privacy seriously. This policy outlines how we handle your biometric data and our commitment to security.</p>
+                </section>
+
+                <section id="data-collection">
+                    <h2>1. Data Collection</h2>
+                    <p>We do not store your personal biometric data on our servers. VitalAI is designed as a "Local-First" application, meaning all analysis happens directly on your device.</p>
+                </section>
+
+                <section id="camera-usage">
+                    <h2>2. Camera Usage</h2>
+                    <p>The application requires camera access to perform photoplethysmogram (PPG) analysis. <strong>No video footage is ever recorded, uploaded, or shared.</strong> The stream is processed in real-time in your browser memory and discarded immediately.</p>
+                </section>
+
+                <section id="local-storage">
+                    <h2>3. Local Storage</h2>
+                    <p>Your scan history is saved to your browser's <code>localStorage</code>. This data remains on your physical device and is not accessible by VitalAI staff or third parties.</p>
+                </section>
+
+                <section id="user-rights">
+                    <h2>4. Your Rights</h2>
+                    <p>You have full control over your data. You can clear your entire scan history at any time via the <strong>Settings</strong> page. Clearing browser cookies/cache will also remove your local health profile.</p>
+                </section>
+            </article>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>About VitalAI</h4>
+                <p>Real-time health monitoring using advanced AI computer vision. Track your vitals anytime, anywhere.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="history.html">History</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <p>Email: support@vitalai.io</p>
+                <p>Address: 123 Wellness Ave, Healthy City</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HealthMonitor Inc. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('nav-menu').classList.toggle('active');
+        });
+
+        // Theme toggle
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+        });
+    </script>
+</body>
+</html>
