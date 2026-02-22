@@ -324,63 +324,99 @@ footer {
 }
 
 @media (max-width: 850px) {
-    /* 2. Show the hamburger button */
+    /* 1. Show the hamburger button */
     .mobile-toggle {
         display: flex;
         align-items: center;
         justify-content: center;
+        z-index: 2100; /* Ensure button stays above drawer */
     }
 
-    /* 3. Transform Nav Links into a Mobile Drawer */
+    /* 2. Drawer Navigation */
     .nav-links {
         position: fixed;
         top: 0;
-        left: -100%; /* Start off-screen */
-        width: 80%; /* Drawer width */
+        left: -100%; 
+        width: 85%; /* Slightly wider for better text clearance */
+        max-width: 320px;
         height: 100vh;
         background: var(--card-bg);
         flex-direction: column;
         align-items: flex-start;
-        padding: 80px 40px; /* Space for the header */
-        gap: 30px;
+        padding: 100px 30px 40px; /* More top padding for the logo/header area */
+        gap: 25px;
         transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         border-right: 1px solid var(--border-color);
-        box-shadow: 15px 0 30px rgba(0,0,0,0.5);
+        box-shadow: 20px 0 40px rgba(0,0,0,0.6);
         z-index: 2000;
+        overflow-y: auto; /* Allow scrolling if menu is long */
     }
 
-    /* 4. Show drawer when 'active' class is added via JS */
     .nav-links.active {
         left: 0;
     }
 
-    /* 5. Mobile Nav Link Styling */
+    /* 3. Mobile Link Styling */
     .nav-links li {
         width: 100%;
     }
 
     .nav-links a {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
+        font-weight: 500;
+        padding: 12px 15px;
+        border-radius: 10px;
         width: 100%;
-        display: block;
+        display: flex;
+        align-items: center;
+        transition: 0.2s;
     }
 
-    /* 6. Stack the Dashboard Metrics */
-    .metrics-grid {
-        grid-template-columns: 1fr;
+    .nav-links a:hover, .nav-links a.active {
+        background: rgba(0, 255, 136, 0.1);
+        color: var(--accent-green);
     }
 
-    /* 7. Stack Chart and AI Sidebar */
-    .lower-grid {
-        grid-template-columns: 1fr;
+    /* 4. Dashboard Grid Stacking */
+    .dashboard-container {
+        padding: 20px 15px; /* Tighter margins for mobile screens */
     }
 
-    /* 8. Fix Status Indicator in Mobile Menu */
+    .metrics-grid, .lower-grid {
+        grid-template-columns: 1fr !important; /* Force single column */
+        gap: 15px;
+    }
+
+    /* 5. Scanner Container Adjustment */
+    .scanner-container {
+        width: 100%;
+        max-width: 280px; /* Prevent it from being too huge on mobile */
+        margin: 0 auto;
+    }
+
+    /* 6. Chart Height Fix */
+    .chart-container {
+        min-height: 300px;
+    }
+
+    .canvas-wrapper {
+        height: 220px;
+    }
+
+    /* 7. Status Indicator (Bottom of Drawer) */
     .status-indicator {
-        margin-top: auto; /* Push to bottom of drawer */
-        padding-top: 20px;
+        margin-top: auto; 
+        padding: 20px 0;
         border-top: 1px solid var(--border-color);
         width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* 8. Fix for Header Controls overlap */
+    .header-controls {
+        gap: 8px;
     }
 }
 

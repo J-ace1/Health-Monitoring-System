@@ -5,20 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="images/img1.png">
     <title>VitalAI | History</title>
+    <link rel="stylesheet" href="contact.css">
     <link rel="stylesheet" href="history.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <header class="main-header">
-        <nav class="nav-container">
-            <div class="logo"><a href="index.html">🩺 Vital<span>AI</span></a></div>
-            <ul class="nav-links">
-                <li><a href="index.html">Dashboard</a></li>
-                <li><a href="history.html" class="active">History</a></li>
-                <li><a href="settings.html">Settings</a></li>
-            </ul>
-        </nav>
-    </header>
+    <nav class="nav-container">
+        <div class="logo">
+            <a href="index.html" style="text-decoration: none; color: inherit;">🩺 Vital<span>AI</span></a>
+        </div>
+        
+        <ul class="nav-links" id="nav-menu">
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="history.html" class="active">History</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li class="status-indicator-mobile">
+                <div class="status-wrapper">
+                    <span id="connection-dot"></span> 
+                    <span id="status-text">System Active</span>
+                </div>
+            </li>
+        </ul>
+
+        <div class="header-controls">
+            <button id="theme-toggle" aria-label="Toggle Theme" class="control-btn">
+                <i data-lucide="sun" class="sun-icon"></i>
+                <i data-lucide="moon" class="moon-icon"></i>
+            </button>
+            <button class="mobile-toggle control-btn" id="mobile-menu-btn">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+    </nav>
+     </header>
 
     <main class="dashboard-container">
         <section class="card">
@@ -44,7 +64,7 @@
 
     <script src="history.js"></script>
 </body>
-<footer>
+    <footer>
      <div class="footer-container">
         <div class="footer-section">
       <h4>About Us</h4>
@@ -81,15 +101,22 @@
         <div class="footer-section">
       <h4>Follow Us</h4>
       <div class="social-icons">
-        <a href="#"><img src="/icons/facebook.svg" alt="Facebook"></a>
-        <a href="#"><img src="/icons/twitter.svg" alt="Twitter"></a>
-        <a href="#"><img src="/icons/linkedin.svg" alt="LinkedIn"></a>
+        <a href="#"><i data-lucide="facebook"></i></a>
+        <a href="#"><i data-lucide="twitter"></i></a>
+        <a href="#"><i data-lucide="linkedin"></i></a>
       </div>
         </div>
         </div>
-
+        <div class="footer-section">
+                <h4>Follow Us On</h4>
+                <div class="social-icons">
+                    <a href="#"><i data-lucide="facebook"></i></a>
+                    <a href="#"><i data-lucide="twitter"></i></a>
+                    <a href="#"><i data-lucide="linkedin"></i></a>
+                </div>
+            </div>
         <div class="footer-bottom">
         <p>&copy; 2026 HealthMonitor Inc. All rights reserved.</p>
         </div>
-</footer>
+    </footer>
 </html>

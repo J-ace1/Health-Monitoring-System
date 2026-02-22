@@ -6,34 +6,48 @@
     <link rel="icon" type="image/png" href="images/img1.png">
     <title>VitalAI | Settings</title>
     <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="contact.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="settings-page">
 
     <header class="main-header">
-        <nav class="nav-container">
-            <div class="logo">
-                <a href="index.html" style="text-decoration: none; color: inherit;">🩺 Vital<span>AI</span></a>
-            </div>
-            <ul class="nav-links" id="nav-menu">
-                <li><a href="index.html">Dashboard</a></li>
-                <li><a href="history.html">History</a></li>
-                <li><a href="settings.html" style="color: var(--accent-green);">Settings</a></li>
-                <li class="status-indicator">
+    <nav class="nav-container">
+        <div class="logo">
+            <a href="index.html" style="text-decoration: none; color: inherit;">
+                🩺 Vital<span>AI</span>
+            </a>
+        </div>
+
+        <ul class="nav-links" id="nav-menu">
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="history.html">History</a></li>
+            <li><a href="settings.html" class="active-link">Settings</a></li>
+            
+            <li class="status-indicator-mobile">
+                <div class="status-wrapper">
                     <span id="connection-dot"></span> 
                     <span id="status-text">System Active</span>
-                </li>
-            </ul>
-            <div class="header-controls">
-                <button id="theme-toggle" aria-label="Toggle Theme">
-                    <i data-lucide="sun" class="sun-icon"></i>
-                    <i data-lucide="moon" class="moon-icon"></i>
-                </button>
-                <button class="mobile-toggle" id="mobile-menu-btn">
-                    <i data-lucide="menu"></i>
-                </button>
+                </div>
+            </li>
+        </ul>
+
+        <div class="header-controls">
+            <div class="status-indicator desktop-only">
+                <span id="connection-dot"></span>
+                <span id="status-text">Active</span>
             </div>
-        </nav>
+
+            <button id="theme-toggle" aria-label="Toggle Theme" class="control-btn">
+                <i data-lucide="sun" class="sun-icon"></i>
+                <i data-lucide="moon" class="moon-icon"></i>
+            </button>
+
+            <button class="mobile-toggle control-btn" id="mobile-menu-btn" aria-label="Open Menu">
+                <i data-lucide="menu" id="menu-icon"></i>
+            </button>
+        </div>
+    </nav>
     </header>
 
     <main class="dashboard-container">
@@ -123,6 +137,14 @@
                 <p>Email: support@vitalai.io</p>
                 <p>Address: 123 Wellness Ave, Healthy City</p>
             </div>
+            <div class="footer-section">
+                <h4>Follow Us On</h4>
+                <div class="social-icons">
+                    <a href="#"><i data-lucide="facebook"></i></a>
+                    <a href="#"><i data-lucide="twitter"></i></a>
+                    <a href="#"><i data-lucide="linkedin"></i></a>
+                </div>
+            </div>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2026 HealthMonitor Inc. All rights reserved.</p>
@@ -130,81 +152,120 @@
     </footer>
 
     <script>
-        // --- 1. Initialize Icons ---
-        lucide.createIcons();
+    // --- 1. Initialize Icons ---
+    lucide.createIcons();
 
-        // --- 2. Section Switcher Logic ---
-        function showSection(sectionId, element) {
-            document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active-tab'));
-            
-            document.getElementById(sectionId).classList.add('active');
-            element.classList.add('active-tab');
+    // --- 2. Section Switcher Logic ---
+    function showSection(sectionId, element) {
+        document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active-tab'));
+        
+        const target = document.getElementById(sectionId);
+        if (target) target.classList.add('active');
+        if (element) element.classList.add('active-tab');
+    }
+
+    // --- 3. Main Logic (Wait for DOM) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- A. Persistent Settings Logic ---
+        const ageInput = document.getElementById('user-age');
+        const sexInput = document.getElementById('user-sex');
+        const saveBtn = document.getElementById('save-profile');
+        const hrSlider = document.getElementById('hr-threshold');
+        const hrLabel = document.getElementById('hr-label');
+        const clearBtn = document.getElementById('clear-data-btn');
+
+        // Load saved data
+        if (ageInput) ageInput.value = localStorage.getItem('user_age') || "";
+        if (sexInput) sexInput.value = localStorage.getItem('user_sex') || "Male";
+        if (hrSlider) {
+            const savedHR = localStorage.getItem('max_hr') || "150";
+            hrSlider.value = savedHR;
+            if (hrLabel) hrLabel.innerText = savedHR;
         }
 
-        // --- 3. Persistent Settings Logic (The Fix) ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const ageInput = document.getElementById('user-age');
-            const sexInput = document.getElementById('user-sex');
-            const saveBtn = document.getElementById('save-profile');
-            const hrSlider = document.getElementById('hr-threshold');
-            const hrLabel = document.getElementById('hr-label');
-            const clearBtn = document.getElementById('clear-data-btn');
+        // Save Profile
+        saveBtn?.addEventListener('click', () => {
+            localStorage.setItem('user_age', ageInput.value);
+            localStorage.setItem('user_sex', sexInput.value);
+            
+            saveBtn.innerText = "Profile Saved! ✓";
+            saveBtn.style.background = "#00ff88";
+            saveBtn.style.color = "#000";
+            
+            setTimeout(() => {
+                saveBtn.innerText = "Save Profile";
+                saveBtn.style.background = ""; 
+                saveBtn.style.color = "";
+            }, 2000);
+        });
 
-            // LOAD: Get data from LocalStorage
-            const savedAge = localStorage.getItem('user_age') || "";
-            const savedSex = localStorage.getItem('user_sex') || "Male";
-            const savedMaxHR = localStorage.getItem('max_hr') || "150";
+        // Save Slider
+        hrSlider?.addEventListener('change', () => {
+            localStorage.setItem('max_hr', hrSlider.value);
+        });
 
-            if (ageInput) ageInput.value = savedAge;
-            if (sexInput) sexInput.value = savedSex;
-            if (hrSlider) {
-                hrSlider.value = savedMaxHR;
-                hrLabel.innerText = savedMaxHR;
+        // Clear Storage
+        clearBtn?.addEventListener('click', () => {
+            if(confirm("Warning: This will delete all settings and history. Continue?")) {
+                localStorage.clear();
+                window.location.reload();
             }
+        });
 
-            // SAVE: Profile Info
-            saveBtn?.addEventListener('click', () => {
-                localStorage.setItem('user_age', ageInput.value);
-                localStorage.setItem('user_sex', sexInput.value);
+        // --- B. Theme Logic ---
+        const themeBtn = document.getElementById('theme-toggle');
+        // Initial load
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+        }
+
+        themeBtn?.addEventListener('click', () => {
+            const isLight = document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        });
+
+        // --- C. Consolidated Mobile Menu Logic ---
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const navMenu = document.getElementById('nav-menu');
+
+        if (mobileBtn && navMenu) {
+            mobileBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
+                const isOpen = navMenu.classList.toggle('active');
                 
-                saveBtn.innerText = "Profile Saved! ✓";
-                saveBtn.style.background = "#00ff88";
-                saveBtn.style.color = "#000";
-                
-                setTimeout(() => {
-                    saveBtn.innerText = "Save Profile";
-                    saveBtn.style.background = ""; 
-                    saveBtn.style.color = "";
-                }, 2000);
-            });
-
-            // SAVE: Slider data on release
-            hrSlider?.addEventListener('change', () => {
-                localStorage.setItem('max_hr', hrSlider.value);
-            });
-
-            // DELETE: Clear Storage
-            clearBtn?.addEventListener('click', () => {
-                if(confirm("Warning: This will delete your age, settings, and all scan history. Continue?")) {
-                    localStorage.clear();
-                    window.location.reload();
+                // Update Icon
+                const icon = mobileBtn.querySelector('i');
+                if (icon) {
+                    icon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+                    lucide.createIcons(); 
                 }
             });
-        });
 
-        // --- 4. Theme & Mobile Logic ---
-        const themeBtn = document.getElementById('theme-toggle');
-        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+            // Close menu when clicking outside or on a link
+            document.addEventListener('click', (e) => {
+                if (!navMenu.contains(e.target) && !mobileBtn.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                    const icon = mobileBtn.querySelector('i');
+                    if (icon) {
+                        icon.setAttribute('data-lucide', 'menu');
+                        lucide.createIcons();
+                    }
+                }
+            });
 
-        themeBtn.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-        });
-
-        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-            document.getElementById('nav-menu').classList.toggle('active');
-        });
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    const icon = mobileBtn.querySelector('i');
+                    if (icon) {
+                        icon.setAttribute('data-lucide', 'menu');
+                        lucide.createIcons();
+                    }
+                });
+            });
+        }
+    });
     </script>
 </body>
 </html>

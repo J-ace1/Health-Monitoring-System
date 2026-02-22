@@ -252,7 +252,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- MOBILE NAVIGATION LOGIC ---
     const mobileBtn = document.getElementById('mobile-menu-btn');
     const navMenu = document.getElementById('nav-menu');
-
+    // Inside your mobileBtn click listener:
+const isOpen = navMenu.classList.contains('active');
+document.body.style.overflow = isOpen ? 'hidden' : 'auto';
     if (mobileBtn && navMenu) {
         mobileBtn.addEventListener('click', (e) => {
             e.stopPropagation();

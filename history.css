@@ -1,40 +1,51 @@
-/* --- Variables & Global Setup --- */
+/* --- 1. THEME VARIABLES & RESET --- */
 :root {
-    --bg-dark: #0f0f12;
-    --card-bg: #1c1c1e;
-    --text-main: #ffffff;
-    --text-secondary: #a1a1aa;
+    --bg-dark: #0b0e14;
+    --card-bg: #161b22;
+    --text-main: #f0f6fc;
+    --text-secondary: #8b949e;
     --accent-green: #00ff88;
     --accent-red: #ff4b4b;
+    --border-color: #30363d;
+    --header-bg: rgba(22, 27, 34, 0.9);
     --nav-height: 70px;
+    --glass-effect: blur(12px) saturate(180%);
+}
+
+body.light-mode {
+    --bg-dark: #f6f8fa;
+    --card-bg: #ffffff;
+    --text-main: #1f2328;
+    --text-secondary: #636c76;
+    --border-color: #d0d7de;
+    --header-bg: rgba(255, 255, 255, 0.85);
 }
 
 body {
     margin: 0;
-    font-family: 'Inter', -apple-system, sans-serif;
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
     background-color: var(--bg-dark);
     color: var(--text-main);
-    line-height: 1.6;
-    display: flex;
-    flex-direction: column;
+    transition: background 0.3s ease;
     min-height: 100vh;
 }
 
-/* --- Navigation (Synced with Index) --- */
+/* --- 2. PREMIUM HEADER --- */
 .main-header {
-    background: rgba(28, 28, 30, 0.8);
-    backdrop-filter: blur(10px);
+    background: var(--header-bg);
+    backdrop-filter: var(--glass-effect);
+    -webkit-backdrop-filter: var(--glass-effect);
     height: var(--nav-height);
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--border-color);
     position: sticky;
     top: 0;
     z-index: 1000;
 }
 
 .nav-container {
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 5%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -42,13 +53,14 @@ body {
 }
 
 .logo a {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.4rem;
+    font-weight: 800;
     color: var(--text-main);
     text-decoration: none;
+    letter-spacing: -0.5px;
 }
 
-.logo span { color: var(--accent-green); }
+.logo span { color: var(--accent-green); text-shadow: 0 0 15px rgba(0, 255, 136, 0.3); }
 
 .nav-links {
     list-style: none;
@@ -60,88 +72,163 @@ body {
     color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
-    transition: 0.3s;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
 }
 
-.nav-links a.active, .nav-links a:hover {
-    color: var(--accent-green);
-}
+.nav-links a.active, .nav-links a:hover { color: var(--accent-green); }
 
-/* --- Main Layout --- */
+/* --- 3. MODERNIZED CARD & TABLE --- */
 .dashboard-container {
-    flex: 1;
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 20px;
-    width: 100%;
-    box-sizing: border-box;
+    max-width: 1300px;
+    margin: 50px auto;
+    padding: 0 5%;
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .card {
     background: var(--card-bg);
-    border: 1px solid #333;
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    overflow-x: auto; /* Handles small screens */
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
 }
 
-h2 { margin-top: 0; color: var(--text-main); }
-
-/* --- History Table --- */
 .history-table {
     width: 100%;
-    border-collapse: collapse;
-    min-width: 600px; /* Prevents squishing */
+    border-collapse: separate;
+    border-spacing: 0 12px; /* Creates floating row effect */
+    margin-top: 20px;
 }
 
 .history-table th {
-    text-align: left;
     color: var(--text-secondary);
-    font-size: 0.85rem;
+    font-weight: 600;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 15px;
-    border-bottom: 2px solid #333;
+    letter-spacing: 1.2px;
+    padding: 15px 20px;
+    border: none;
+}
+
+.history-table tbody tr {
+    background: rgba(255, 255, 255, 0.03);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+body.light-mode .history-table tbody tr {
+    background: #f8f9fa;
+    border: 1px solid var(--border-color);
+}
+
+.history-table tbody tr:hover {
+    transform: scale(1.01);
+    background: rgba(0, 255, 136, 0.05);
 }
 
 .history-table td {
-    padding: 20px 15px;
-    border-bottom: 1px solid #2c2c2e;
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
 }
 
-.history-table tr:last-child td { border-bottom: none; }
-
-.history-table tr:hover {
-    background: rgba(255, 255, 255, 0.02);
+.history-table td:first-child { 
+    border-left: 1px solid var(--border-color); 
+    border-radius: 12px 0 0 12px; 
+}
+.history-table td:last-child { 
+    border-right: 1px solid var(--border-color); 
+    border-radius: 0 12px 12px 0; 
 }
 
-.history-table small {
+/* --- 4. DATA HIGHLIGHTS --- */
+.text-accent {
+    color: var(--accent-green);
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+}
+
+.time-stamp {
     color: var(--text-secondary);
-    display: block;
-    margin-top: 4px;
+    font-size: 0.8rem;
 }
 
-/* --- Footer --- */
+/* --- 5. BUTTONS & CONTROLS --- */
+.header-controls { display: flex; gap: 15px; }
+
+.control-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.control-btn:hover { border-color: var(--accent-green); color: var(--accent-green); }
+
+.action-btn {
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+/* --- FOOTER STYLING --- */
 footer {
     background: var(--card-bg);
-    border-top: 1px solid #333;
-    padding: 60px 20px 20px;
-    margin-top: 60px;
+    border-top: 1px solid var(--border-color);
+    padding: 80px 5% 30px;
+    margin-top: 80px;
+    color: var(--text-secondary);
 }
 
 .footer-container {
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    /* responsive grid: 1 column on mobile, up to 5 on wide screens */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 40px;
-    margin-bottom: 40px;
+    padding-bottom: 50px;
 }
 
 .footer-section h4 {
-    color: var(--accent-green);
-    margin-bottom: 20px;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    font-weight: 700;
+    position: relative;
+}
+
+/* Subtle accent line under headings */
+.footer-section h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 30px;
+    height: 2px;
+    background: var(--accent-green);
+    border-radius: 2px;
+}
+
+.footer-section p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 300px;
 }
 
 .footer-section ul {
@@ -149,41 +236,107 @@ footer {
     padding: 0;
 }
 
-.footer-section ul li { margin-bottom: 10px; }
+.footer-section ul li {
+    margin-bottom: 12px;
+}
 
 .footer-section a {
     color: var(--text-secondary);
     text-decoration: none;
-    transition: 0.3s;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
 }
 
-.footer-section a:hover { color: var(--accent-green); }
+.footer-section a:hover {
+    color: var(--accent-green);
+    padding-left: 5px; /* Subtle slide effect on hover */
+}
 
+/* Social Icons Styling */
+.social-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.social-icons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-main);
+    transition: all 0.3s ease;
+}
+
+body.light-mode .social-icons a {
+    background: #f0f2f5;
+}
+
+.social-icons a:hover {
+    background: rgba(0, 255, 136, 0.1);
+    color: var(--accent-green);
+    border-color: var(--accent-green);
+    transform: translateY(-3px);
+}
+
+/* Bottom Bar */
 .footer-bottom {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding-top: 30px;
+    border-top: 1px solid var(--border-color);
     text-align: center;
-    border-top: 1px solid #333;
-    padding-top: 20px;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
-/* --- Buttons --- */
-.action-btn {
-    border-radius: 8px;
-    border: none;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.action-btn:hover {
-    filter: brightness(1.2);
-    transform: translateY(-2px);
+/* Handle the duplicate Follow Us section in your HTML */
+.footer-container + .footer-section {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 5% 40px;
+    display: none; /* Hidden because it's redundant with the one inside the container */
 }
 
 /* Mobile Adjustments */
-@media (max-width: 768px) {
-    .nav-links { display: none; } /* Use your mobile menu toggle here */
-    .dashboard-container { margin: 20px auto; }
+@media (max-width: 600px) {
+    footer {
+        padding: 50px 5% 30px;
+        text-align: center;
+    }
+
+    .footer-section h4::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .footer-section p {
+        margin: 0 auto;
+    }
+
+    .social-icons {
+        justify-content: center;
+    }
+}
+
+/* --- 7. MOBILE RESPONSIVE --- */
+@media (max-width: 900px) {
+    .nav-links {
+        position: fixed;
+        top: var(--nav-height);
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - var(--nav-height));
+        background: var(--card-bg);
+        flex-direction: column;
+        align-items: center;
+        padding-top: 50px;
+        transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-links.active { left: 0; }
+    .history-table { min-width: 500px; }
+    .card { padding: 20px; border-radius: 0; }
 }
