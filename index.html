@@ -1,170 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="images/img1.png">
-    <title>VitalAI | Smart Health Monitor</title>
-    <link rel="stylesheet" href="contact.css">
-    <link rel="stylesheet" href="style.css">
-    
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HealthMonitor helps you track heart rate, blood pressure, temperature, oxygen and glucose in one place.">
+  <title>HealthMonitor | Take Control of Your Health</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="script.js" defer></script>
 </head>
-<body class="dark-mode"> <header class="main-header">
-        <nav class="nav-container">
-            <div class="logo">
-                <a href="index.html" style="text-decoration: none; color: inherit;">🩺 Vital<span>AI</span></a>
-            </div>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
 
-            <ul class="nav-links" id="nav-menu">
-                <li><a href="index.html" class="active">Dashboard</a></li>
-                <li><a href="history.html">History</a></li>
-                <li><a href="settings.html">Settings</a></li>
-                <li class="status-indicator">
-                    <span id="connection-dot"></span> 
-                    <span id="status-text">Sensor Offline</span>
-                </li>
+  <!-- ========== NAVIGATION ========== -->
+  <header class="site-header" id="header">
+    <nav class="nav container" aria-label="Main">
+      <a href="#home" class="logo"><i data-lucide="heart-pulse"></i> Health<span>Monitor</span></a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li class="nav-auth">
+          <button class="btn btn-ghost" data-open="login">Login</button>
+          <button class="btn btn-primary" data-open="register">Register</button>
+        </li>
+      </ul>
+      <button class="menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+        <i data-lucide="menu"></i>
+      </button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ========== HERO ========== -->
+    <section class="hero" id="home">
+      <span class="shape s1"></span><span class="shape s2"></span>
+      <div class="container hero-grid">
+        <div class="hero-text">
+          <h1>Take Control of Your Health, Anytime, Anywhere.</h1>
+          <p>HealthMonitor brings your heart rate, blood pressure, temperature, oxygen and glucose readings into one clear dashboard, so you can spot changes early and share reports with your doctor.</p>
+          <div class="hero-cta">
+            <button class="btn btn-primary btn-lg" data-open="register">Get Started</button>
+            <a href="#about" class="btn btn-outline btn-lg">Learn More</a>
+          </div>
+          <ul class="hero-stats">
+            <li><strong data-count="50000" data-suffix="+">0</strong><span>Readings logged</span></li>
+            <li><strong data-count="98" data-suffix="%">0</strong><span>Users feel in control</span></li>
+            <li><strong data-count="24" data-suffix="/7">0</strong><span>Alerts and access</span></li>
+          </ul>
+        </div>
+
+        <!-- Illustration: a live-reading phone card built with inline SVG -->
+        <div class="hero-visual" aria-hidden="true">
+          <div class="device">
+            <div class="device-top"><span>Today</span><i data-lucide="activity"></i></div>
+            <div class="bpm"><i data-lucide="heart" class="pulse"></i><strong>72</strong><small>BPM</small></div>
+            <svg class="ecg" viewBox="0 0 300 60" preserveAspectRatio="none">
+              <polyline points="0,30 40,30 55,30 65,8 75,52 85,18 95,30 150,30 165,30 175,6 185,54 195,20 205,30 300,30"/>
+            </svg>
+            <div class="mini"><div><small>SpO₂</small><b>98%</b></div><div><small>Temp</small><b>36.7°C</b></div><div><small>BP</small><b>118/76</b></div></div>
+          </div>
+          <div class="chip chip-a"><i data-lucide="shield-check"></i> Secure data</div>
+          <div class="chip chip-b"><i data-lucide="bell"></i> Alert sent</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== FEATURES ========== -->
+    <section class="section" id="features">
+      <div class="container">
+        <header class="section-head">
+          <h2>Everything you need to monitor your health</h2>
+          <p>Six core tools, one simple dashboard.</p>
+        </header>
+        <div class="grid grid-3">
+          <article class="card feature reveal"><i data-lucide="heart-pulse"></i><h3>Heart Rate</h3><p>Track your pulse in beats per minute (BPM) at rest and during activity.</p></article>
+          <article class="card feature reveal"><i data-lucide="gauge"></i><h3>Blood Pressure</h3><p>Log systolic and diastolic readings in mmHg and see how they trend.</p></article>
+          <article class="card feature reveal"><i data-lucide="thermometer"></i><h3>Body Temperature</h3><p>Record your temperature in °C and spot fevers early.</p></article>
+          <article class="card feature reveal"><i data-lucide="droplets"></i><h3>Blood Oxygen (SpO₂)</h3><p>Keep an eye on oxygen saturation and get notified when it drops.</p></article>
+          <article class="card feature reveal"><i data-lucide="droplet"></i><h3>Blood Glucose</h3><p>Note glucose levels before and after meals to understand your patterns.</p></article>
+          <article class="card feature reveal"><i data-lucide="file-text"></i><h3>History and Reports</h3><p>Browse past readings and export a report to share with your doctor.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== HOW IT WORKS (About) ========== -->
+    <section class="section alt" id="about">
+      <div class="container">
+        <header class="section-head">
+          <h2>How HealthMonitor works</h2>
+          <p>HealthMonitor is a personal health tracker built for individuals and families. Get set up in minutes.</p>
+        </header>
+        <ol class="steps">
+          <li class="reveal"><span class="step-num">1</span><i data-lucide="user-plus"></i><h3>Register an account</h3><p>Create a free account with your email.</p></li>
+          <li class="reveal"><span class="step-num">2</span><i data-lucide="plug"></i><h3>Connect or enter your data</h3><p>Pair a supported device or type in your readings by hand.</p></li>
+          <li class="reveal"><span class="step-num">3</span><i data-lucide="line-chart"></i><h3>Monitor and get updates</h3><p>View your statistics and receive alerts when something looks off.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========== DASHBOARD PREVIEW (Services) ========== -->
+    <section class="section" id="services">
+      <div class="container">
+        <header class="section-head">
+          <h2>A preview of your dashboard</h2>
+          <p>Sample data shown for demonstration.</p>
+        </header>
+        <div class="dash">
+          <div class="dash-stats">
+            <div class="stat"><i data-lucide="heart-pulse" class="c-red"></i><small>Heart rate</small><strong><span data-count="72">0</span> <em>BPM</em></strong></div>
+            <div class="stat"><i data-lucide="gauge" class="c-blue"></i><small>Blood pressure</small><strong>118/76 <em>mmHg</em></strong></div>
+            <div class="stat"><i data-lucide="thermometer" class="c-amber"></i><small>Temperature</small><strong>36.7 <em>°C</em></strong></div>
+            <div class="stat"><i data-lucide="droplets" class="c-green"></i><small>Oxygen</small><strong><span data-count="98">0</span> <em>%</em></strong></div>
+          </div>
+          <div class="dash-charts">
+            <div class="card chart-card"><h3>Heart rate this week</h3><div class="chart-box"><canvas id="hrChart" role="img" aria-label="Line chart of heart rate over seven days"></canvas></div></div>
+            <div class="card chart-card"><h3>Blood pressure this week</h3><div class="chart-box"><canvas id="bpChart" role="img" aria-label="Line chart of blood pressure over seven days"></canvas></div></div>
+          </div>
+          <div class="card activity">
+            <h3>Recent activity</h3>
+            <ul>
+              <li><i data-lucide="check-circle-2" class="c-green"></i><div><b>Heart rate logged: 72 BPM</b><small>Today, 8:15 AM</small></div></li>
+              <li><i data-lucide="bell" class="c-amber"></i><div><b>Alert: blood pressure slightly high</b><small>Yesterday, 6:40 PM</small></div></li>
+              <li><i data-lucide="file-text" class="c-blue"></i><div><b>Weekly report ready</b><small>Monday, 7:00 AM</small></div></li>
             </ul>
-
-            <div class="header-controls">
-                <button id="theme-toggle" aria-label="Toggle Theme">
-                    <i data-lucide="sun" class="sun-icon"></i>
-                    <i data-lucide="moon" class="moon-icon"></i>
-                </button>
-
-                <button class="mobile-toggle" id="mobile-menu-btn" aria-label="Open Menu">
-                    <i data-lucide="menu"></i>
-                </button>
-            </div>
-        </nav>
-    </header>
-
-    <main class="dashboard-container">
-        <section class="metrics-grid">
-            
-            <div class="card scanner-card">
-                <h3><i data-lucide="camera"></i> AI Bio-Scan</h3>
-                <p class="status-msg">Cover camera & flash with finger</p>
-                
-                <div class="scanner-container">
-                    <video id="vitals-video" autoplay playsinline style="display:none;"></video>
-                    <canvas id="vitals-canvas" width="120" height="120"></canvas>
-                </div>
-                
-                <button id="start-scan" class="action-btn primary">Start 20s Scan</button>
-                <div id="scan-progress">Ready to monitor</div>
-            </div>
-
-            <div class="card vital-card" id="hr-card">
-                <div class="card-header">
-                    <h4>Heart Rate</h4>
-                    <i data-lucide="heart" class="icon-red"></i>
-                </div>
-                <div class="value-container">
-                    <span class="value" id="hr-value">--</span>
-                    <span class="unit">BPM</span>
-                </div>
-                <p class="status">Status: <span id="hr-status">Waiting...</span></p>
-            </div>
-
-            <div class="card vital-card" id="spo2-card">
-                <div class="card-header">
-                    <h4>Oxygen (SpO<sub>2</sub>)</h4>
-                    <i data-lucide="droplets" class="icon-blue"></i>
-                </div>
-                <div class="value-container">
-                    <span class="value" id="spo2-value">--</span>
-                    <span class="unit">%</span>
-                </div>
-                <p class="status">Status: <span id="spo2-status">Optimal</span></p>
-            </div>
-
-            <div class="card vital-card" id="resp-card">
-                <div class="card-header">
-                    <h4>Breathing</h4>
-                    <i data-lucide="wind" class="icon-green"></i>
-                </div>
-                <div class="value-container">
-                    <span class="value" id="resp-value">--</span>
-                    <span class="unit">BrPM</span>
-                </div>
-                <p class="status">Status: <span id="resp-status">Normal</span></p>
-            </div>
-
-        </section>
-
-        <section class="lower-grid">
-            <div class="chart-container card">
-                <h3>Live PPG Stream</h3>
-                <div class="canvas-wrapper">
-                    <canvas id="vitalChart"></canvas>
-                </div>
-            </div>
-
-            <aside class="ai-sidebar card">
-                <h3>AI Health Insights</h3>
-                <div id="ai-messages">
-                    <p class="ai-msg" id="ai-status">Place finger on camera to begin real-time analysis.</p>
-                </div>
-                <button class="action-btn secondary" id="download-report">
-                    <i data-lucide="download"></i> Download Report
-                </button>
-            </aside>
-        </section>
-    </main>
-
-    <footer>
-     <div class="footer-container">
-        <div class="footer-section">
-      <h4>About Us</h4>
-      <p>We provide real-time health monitoring solutions to help individuals and professionals track vital signs and improve wellness outcomes.</p>
+          </div>
         </div>
+      </div>
+    </section>
 
-     <div class="footer-section">
-      <h4>Quick Links</h4>
-      <ul>
-        <li><a href="index.html">Dashboard</a></li>
-        <li><a href="history.html">History</a></li>
-        <li><a href="settings.html">Settings</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
+    <!-- ========== WHY CHOOSE US ========== -->
+    <section class="section alt" id="why">
+      <div class="container">
+        <header class="section-head"><h2>Why choose HealthMonitor?</h2></header>
+        <div class="grid grid-3">
+          <div class="why reveal"><i data-lucide="zap"></i><div><h3>Real-time tracking</h3><p>Live updates when connected to supported devices.</p></div></div>
+          <div class="why reveal"><i data-lucide="folder-open"></i><div><h3>Easy access to records</h3><p>Your full history is one tap away.</p></div></div>
+          <div class="why reveal"><i data-lucide="lock"></i><div><h3>Secure information</h3><p>Your health data stays private and protected.</p></div></div>
+          <div class="why reveal"><i data-lucide="smile"></i><div><h3>User-friendly interface</h3><p>Clear screens that work for every age.</p></div></div>
+          <div class="why reveal"><i data-lucide="bell-ring"></i><div><h3>Alerts and notifications</h3><p>Get notified when a reading leaves your safe range.</p></div></div>
         </div>
+      </div>
+    </section>
 
-        <div class="footer-section">
-      <h4>Resources</h4>
-      <ul>
-        <li><a href="history.html">Health Blog</a></li>
-        <li><a href="contact.html">Support Center</a></li>
-        <li><a href="privacy.html">Privacy Policy</a></li>
-      </ul>
-            </div>
-
-        <div class="footer-section">
-      <h4>Contact</h4>
-      <p>Email: support@healthmonitor.com</p>
-      <p>Phone: +1 (800) 555-1234</p>
-      <p>Address: 123 Wellness Ave, Healthy City, HC 45678</p>
+    <!-- ========== CONTACT ========== -->
+    <section class="section" id="contact">
+      <div class="container contact-grid">
+        <div>
+          <h2>Questions? Talk to us.</h2>
+          <p class="lead">Send a message and our team will reply within one business day.</p>
+          <ul class="contact-list">
+            <li><i data-lucide="mail"></i> support@healthmonitor.com</li>
+            <li><i data-lucide="phone"></i> +1 (800) 555-1234</li>
+            <li><i data-lucide="map-pin"></i> 123 Wellness Ave, Healthy City, HC 45678</li>
+          </ul>
         </div>
+        <form class="card form" id="contact-form" novalidate>
+          <label>Name<input type="text" name="name" autocomplete="name"><span class="err" aria-live="polite"></span></label>
+          <label>Email<input type="email" name="email" autocomplete="email"><span class="err" aria-live="polite"></span></label>
+          <label>Message<textarea name="message" rows="4"></textarea><span class="err" aria-live="polite"></span></label>
+          <button class="btn btn-primary" type="submit">Send message</button>
+          <p class="form-ok" role="status"></p>
+        </form>
+      </div>
+    </section>
 
-        <div class="footer-section">
-      
-      <div class="footer-section">
-                <h4>Follow Us On</h4>
-                <div class="social-icons">
-                    <a href="#"><i data-lucide="facebook"></i></a>
-                    <a href="#"><i data-lucide="twitter"></i></a>
-                    <a href="#"><i data-lucide="linkedin"></i></a>
-                </div>
-            </div>
-        </div>
-        </div>
+    <!-- ========== CALL TO ACTION ========== -->
+    <section class="cta">
+      <div class="container">
+        <h2>Your Health Matters. Start Monitoring Today.</h2>
+        <button class="btn btn-light btn-lg" data-open="register">Get Started</button>
+      </div>
+    </section>
+  </main>
 
-        <div class="footer-bottom">
-        <p>&copy; 2026 HealthMonitor Inc. All rights reserved.</p>
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <a href="#home" class="logo logo-light"><i data-lucide="heart-pulse"></i> Health<span>Monitor</span></a>
+        <p>Simple, secure health tracking for individuals and families.</p>
+      </div>
+      <div><h4>Quick links</h4><ul><li><a href="#home">Home</a></li><li><a href="#about">About</a></li><li><a href="#features">Features</a></li><li><a href="#services">Services</a></li><li><a href="#contact">Contact</a></li></ul></div>
+      <div><h4>Contact</h4><ul><li>support@healthmonitor.com</li><li>+1 (800) 555-1234</li><li>Healthy City, HC 45678</li></ul></div>
+      <div><h4>Follow us</h4>
+        <div class="social">
+          <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+          <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+          <a href="#" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
         </div>
-    </footer>
+      </div>
+    </div>
+    <p class="copy">&copy; 2026 HealthMonitor. All rights reserved.</p>
+  </footer>
 
-    <script src="script.js"></script>
+  <!-- ========== LOGIN / REGISTER MODALS ========== -->
+  <div class="modal" id="modal-login" role="dialog" aria-modal="true" aria-labelledby="login-title" hidden>
+    <div class="modal-box">
+      <button class="modal-close" data-close aria-label="Close"><i data-lucide="x"></i></button>
+      <h2 id="login-title">Welcome back</h2>
+      <form class="form" id="login-form" novalidate>
+        <label>Email<input type="email" name="email" autocomplete="email"><span class="err" aria-live="polite"></span></label>
+        <label>Password<input type="password" name="password" autocomplete="current-password"><span class="err" aria-live="polite"></span></label>
+        <button class="btn btn-primary" type="submit">Log in</button>
+        <p class="form-ok" role="status"></p>
+      </form>
+      <p class="switch">New here? <button class="link" data-open="register">Create an account</button></p>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-register" role="dialog" aria-modal="true" aria-labelledby="reg-title" hidden>
+    <div class="modal-box">
+      <button class="modal-close" data-close aria-label="Close"><i data-lucide="x"></i></button>
+      <h2 id="reg-title">Create your account</h2>
+      <form class="form" id="register-form" novalidate>
+        <label>Full name<input type="text" name="name" autocomplete="name"><span class="err" aria-live="polite"></span></label>
+        <label>Email<input type="email" name="email" autocomplete="email"><span class="err" aria-live="polite"></span></label>
+        <label>Password<input type="password" name="password" autocomplete="new-password"><span class="err" aria-live="polite"></span></label>
+        <label>Confirm password<input type="password" name="confirm" autocomplete="new-password"><span class="err" aria-live="polite"></span></label>
+        <button class="btn btn-primary" type="submit">Register</button>
+        <p class="form-ok" role="status"></p>
+      </form>
+      <p class="switch">Already registered? <button class="link" data-open="login">Log in</button></p>
+    </div>
+  </div>
 </body>
 </html>
