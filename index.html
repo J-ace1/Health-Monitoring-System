@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="HealthMonitor helps you track heart rate, blood pressure, temperature, oxygen and glucose in one place.">
   <title>HealthMonitor | Take Control of Your Health</title>
+  <script src="theme.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -27,10 +28,18 @@
         <li><a href="#services">Services</a></li>
         <li><a href="#contact">Contact</a></li>
         <li class="nav-auth">
-          <button class="btn btn-ghost" data-open="login">Login</button>
-          <button class="btn btn-primary" data-open="register">Register</button>
+          <span id="auth-email" hidden></span>
+          <button class="btn btn-ghost" id="logout-btn" type="button" hidden>Log out</button>
+          <span id="guest-actions">
+            <button class="btn btn-ghost" data-open="login">Login</button>
+            <button class="btn btn-primary" data-open="register">Register</button>
+          </span>
         </li>
       </ul>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">
+        <i data-lucide="moon" class="moon-icon"></i>
+        <i data-lucide="sun" class="sun-icon" hidden></i>
+      </button>
       <button class="menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
         <i data-lucide="menu"></i>
       </button>
@@ -109,15 +118,16 @@
     <section class="section" id="services">
       <div class="container">
         <header class="section-head">
-          <h2>A preview of your dashboard</h2>
-          <p>Sample data shown for demonstration.</p>
+          <h2>Your health dashboard</h2>
+          <p id="dashboard-message">Sign in to load your saved readings and charts.</p>
         </header>
+        <p id="api-status" class="form-ok" role="status" aria-live="polite"></p>
         <div class="dash">
           <div class="dash-stats">
-            <div class="stat"><i data-lucide="heart-pulse" class="c-red"></i><small>Heart rate</small><strong><span data-count="72">0</span> <em>BPM</em></strong></div>
-            <div class="stat"><i data-lucide="gauge" class="c-blue"></i><small>Blood pressure</small><strong>118/76 <em>mmHg</em></strong></div>
-            <div class="stat"><i data-lucide="thermometer" class="c-amber"></i><small>Temperature</small><strong>36.7 <em>°C</em></strong></div>
-            <div class="stat"><i data-lucide="droplets" class="c-green"></i><small>Oxygen</small><strong><span data-count="98">0</span> <em>%</em></strong></div>
+            <div class="stat"><i data-lucide="heart-pulse" class="c-red"></i><small>Heart rate</small><strong><span id="latest-hr">—</span> <em>BPM</em></strong></div>
+            <div class="stat"><i data-lucide="gauge" class="c-blue"></i><small>Blood pressure</small><strong><span id="latest-bp">—</span> <em>mmHg</em></strong></div>
+            <div class="stat"><i data-lucide="thermometer" class="c-amber"></i><small>Temperature</small><strong><span id="latest-temp">—</span> <em>°C</em></strong></div>
+            <div class="stat"><i data-lucide="droplets" class="c-green"></i><small>Oxygen</small><strong><span id="latest-spo2">—</span> <em>%</em></strong></div>
           </div>
           <div class="dash-charts">
             <div class="card chart-card"><h3>Heart rate this week</h3><div class="chart-box"><canvas id="hrChart" role="img" aria-label="Line chart of heart rate over seven days"></canvas></div></div>
@@ -125,12 +135,21 @@
           </div>
           <div class="card activity">
             <h3>Recent activity</h3>
-            <ul>
-              <li><i data-lucide="check-circle-2" class="c-green"></i><div><b>Heart rate logged: 72 BPM</b><small>Today, 8:15 AM</small></div></li>
-              <li><i data-lucide="bell" class="c-amber"></i><div><b>Alert: blood pressure slightly high</b><small>Yesterday, 6:40 PM</small></div></li>
-              <li><i data-lucide="file-text" class="c-blue"></i><div><b>Weekly report ready</b><small>Monday, 7:00 AM</small></div></li>
-            </ul>
+            <ul id="recent-readings"><li><div><b>No readings loaded.</b></div></li></ul>
           </div>
+          <form class="card form" id="vitals-form" hidden>
+            <h3>Record a reading</h3>
+            <div class="dash-stats">
+              <label>Heart rate (BPM)<input name="hr" type="number" min="30" max="250" required></label>
+              <label>Oxygen (%)<input name="spo2" type="number" min="50" max="100" step="0.1" required></label>
+              <label>Temperature (°C)<input name="temp" type="number" min="25" max="45" step="0.1" required></label>
+              <label>Systolic (mmHg)<input name="systolic" type="number" min="40" max="300"></label>
+              <label>Diastolic (mmHg)<input name="diastolic" type="number" min="20" max="200"></label>
+              <label>Respiratory rate (/min)<input name="resp" type="number" min="1" max="100"></label>
+            </div>
+            <button class="btn btn-primary" type="submit">Save reading</button>
+            <p class="form-ok" role="status" aria-live="polite"></p>
+          </form>
         </div>
       </div>
     </section>
@@ -230,5 +249,6 @@
       <p class="switch">Already registered? <button class="link" data-open="login">Log in</button></p>
     </div>
   </div>
+  <script src="api.js"></script>
 </body>
 </html>

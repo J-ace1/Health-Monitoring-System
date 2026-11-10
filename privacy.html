@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="images/img1.png">
     <title>Privacy Policy | VitalAI</title>
+    <script src="theme.js"></script>
     <link rel="stylesheet" href="contact.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="privacy.css">
@@ -28,8 +29,8 @@
             </ul>
             <div class="header-controls">
                 <button id="theme-toggle" aria-label="Toggle Theme">
-                    <i data-lucide="sun" class="sun-icon"></i>
                     <i data-lucide="moon" class="moon-icon"></i>
+                    <i data-lucide="sun" class="sun-icon" hidden></i>
                 </button>
                 <button class="mobile-toggle" id="mobile-menu-btn">
                     <i data-lucide="menu"></i>
@@ -140,10 +141,6 @@
             document.getElementById('nav-menu').classList.toggle('active');
         });
 
-        // Theme toggle
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-        });
     </script>
 </body>
 </html>

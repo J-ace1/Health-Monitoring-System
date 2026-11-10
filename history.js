@@ -1,105 +1,120 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- 1. Initialize Icons ---
-    if (window.lucide) lucide.createIcons();
+document.addEventListener("DOMContentLoaded", () => {
+  if (window.lucide) lucide.createIcons();
 
-    const historyBody = document.getElementById('history-body');
-    const clearBtn = document.getElementById('clear-history');
-    const themeBtn = document.getElementById('theme-toggle');
-    const mobileBtn = document.getElementById('mobile-menu-btn');
-    const navMenu = document.getElementById('nav-menu');
+  const historyBody = document.getElementById("history-body");
+  const clearBtn = document.getElementById("clear-history");
+  const status = document.getElementById("history-status");
+  const mobileBtn = document.getElementById("mobile-menu-btn");
+  const navMenu = document.getElementById("nav-menu");
 
-    // --- 2. History Management Logic ---
-    function loadHistory() {
-        // Must match the key used in your main script exactly
-        const rawData = localStorage.getItem('vitalAI_History');
-        const history = JSON.parse(rawData) || [];
-        
-        if (history.length === 0) {
-            historyBody.innerHTML = `
-                <tr>
-                    <td colspan="4" style="text-align:center; padding: 50px; color: var(--text-secondary);">
-                        <i data-lucide="clipboard-x" style="margin-bottom:10px; width: 40px; height: 40px;"></i><br>
-                        No scan history found. Start a scan on the Dashboard.
-                    </td>
-                </tr>`;
-            if (window.lucide) lucide.createIcons();
-            return;
-        }
+  const setStatus = (message, isError = false) => {
+    status.textContent = message;
+    status.style.color = isError ? "#ff4b4b" : "";
+  };
 
-        // Generate Table Rows
-        historyBody.innerHTML = history.map(entry => `
-            <tr>
-                <td>
-                    <span style="font-weight: 600; color: var(--text-main);">${entry.date}</span><br>
-                    <small style="color: var(--text-secondary);">${entry.time}</small>
-                </td>
-                <td><span style="color: var(--accent-green); font-weight: bold;">${entry.hr}</span> <small>BPM</small></td>
-                <td>${entry.spo2}%</td>
-                <td>${entry.resp} <small>BrPM</small></td>
-            </tr>
-        `).join('');
+  function showEmpty(message) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 4;
+    cell.style.cssText = "text-align:center; padding: 50px; color: var(--text-secondary);";
+    cell.textContent = message;
+    row.append(cell);
+    historyBody.replaceChildren(row);
+  }
+
+  function renderHistory(entries) {
+    if (!entries.length) {
+      showEmpty("No readings saved yet. Record a reading on the Dashboard.");
+      return;
     }
 
-    // Clear History Logic
-    clearBtn?.addEventListener('click', () => {
-        if (confirm("Delete all health history? This cannot be undone.")) {
-            localStorage.removeItem('vitalAI_History');
-            loadHistory();
-        }
+    const rows = entries.map(entry => {
+      const row = document.createElement("tr");
+      const dateCell = document.createElement("td");
+      const date = document.createElement("span");
+      const time = document.createElement("small");
+      const heartRate = document.createElement("td");
+      const oxygen = document.createElement("td");
+      const respiratory = document.createElement("td");
+      const recordedAt = new Date(entry.recorded_at);
+
+      date.style.cssText = "font-weight: 600; color: var(--text-main);";
+      date.textContent = recordedAt.toLocaleDateString();
+      time.style.color = "var(--text-secondary)";
+      time.textContent = recordedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      heartRate.textContent = `${entry.hr} BPM`;
+      heartRate.style.cssText = "color: var(--accent-green); font-weight: bold;";
+      oxygen.textContent = `${entry.spo2}%`;
+      respiratory.textContent = entry.resp == null ? "—" : `${entry.resp} BrPM`;
+
+      dateCell.append(date, document.createElement("br"), time);
+      row.append(dateCell, heartRate, oxygen, respiratory);
+      return row;
     });
+    historyBody.replaceChildren(...rows);
+  }
 
-    // --- 3. Persistent Theme Logic ---
-    // Check for saved theme preference
-    if (localStorage.getItem('theme') === 'light') {
-        document.body.classList.add('light-mode');
+  async function loadHistory() {
+    if (!window.HealthMonitorAPI.getToken()) {
+      showEmpty("Sign in on the Dashboard to view your saved history.");
+      setStatus("Your readings are private to your account. Sign in to load them.");
+      return;
     }
+    try {
+      const response = await window.HealthMonitorAPI.request("/history?limit=500");
+      renderHistory(response.items);
+      setStatus(`${response.count} reading${response.count === 1 ? "" : "s"} loaded.`);
+    } catch (error) {
+      showEmpty(error.message);
+      setStatus(error.message, true);
+    }
+  }
 
-    themeBtn?.addEventListener('click', () => {
-        const isLight = document.body.classList.toggle('light-mode');
-        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  clearBtn.addEventListener("click", async () => {
+    if (!window.HealthMonitorAPI.getToken()) {
+      setStatus("Sign in on the Dashboard before clearing history.", true);
+      return;
+    }
+    if (!confirm("Delete all health history? This cannot be undone.")) return;
+    clearBtn.disabled = true;
+    try {
+      const result = await window.HealthMonitorAPI.request("/history", { method: "DELETE" });
+      await loadHistory();
+      setStatus(`${result.deleted} reading${result.deleted === 1 ? "" : "s"} deleted.`);
+    } catch (error) {
+      setStatus(error.message, true);
+    } finally {
+      clearBtn.disabled = false;
+    }
+  });
+
+  if (mobileBtn && navMenu) {
+    mobileBtn.addEventListener("click", event => {
+      event.stopPropagation();
+      const isOpen = navMenu.classList.toggle("active");
+      updateMenuIcon(isOpen);
     });
+    navMenu.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        navMenu.classList.remove("active");
+        updateMenuIcon(false);
+      });
+    });
+    document.addEventListener("click", event => {
+      if (!navMenu.contains(event.target) && !mobileBtn.contains(event.target)) {
+        navMenu.classList.remove("active");
+        updateMenuIcon(false);
+      }
+    });
+  }
 
-    // --- 4. Mobile Menu Logic ---
-    if (mobileBtn && navMenu) {
-        mobileBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Stop click from bubbling to document
-            const isOpen = navMenu.classList.toggle('active');
-            
-            // Toggle icon between Menu and X
-            const icon = mobileBtn.querySelector('i');
-            if (icon) {
-                icon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
-                lucide.createIcons(); 
-            }
-        });
-
-        // Close menu when clicking any link
-        navMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-                updateMenuIcon(false);
-            });
-        });
-
-        // Close menu if clicking outside the navbar
-        document.addEventListener('click', (e) => {
-            if (!navMenu.contains(e.target) && !mobileBtn.contains(e.target)) {
-                if (navMenu.classList.contains('active')) {
-                    navMenu.classList.remove('active');
-                    updateMenuIcon(false);
-                }
-            }
-        });
+  function updateMenuIcon(isOpen) {
+    const icon = mobileBtn?.querySelector("i");
+    if (icon && window.lucide) {
+      icon.setAttribute("data-lucide", isOpen ? "x" : "menu");
+      lucide.createIcons();
     }
+  }
 
-    function updateMenuIcon(isOpen) {
-        const icon = mobileBtn?.querySelector('i');
-        if (icon) {
-            icon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
-            lucide.createIcons();
-        }
-    }
-
-    // Initialize History on load
-    loadHistory();
+  loadHistory();
 });

@@ -51,30 +51,96 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { threshold: 0.6 });
   $$("[data-count]").forEach(el => counters.observe(el));
 
-  /* ---------- Charts (Chart.js, sample data) ---------- */
+  /* ---------- Charts ---------- */
+  let hrChart = null, bpChart = null;
   if (window.Chart) {
-    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     const base = {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: { x: { grid: { display: false } }, y: { grid: { color: "#e8eef6" } } },
       elements: { line: { tension: 0.4 }, point: { radius: 3, hoverRadius: 6 } }
     };
-    new Chart($("#hrChart"), {
+    hrChart = new Chart($("#hrChart"), {
       type: "line",
-      data: { labels: days, datasets: [{ label: "BPM", data: [70, 74, 71, 78, 73, 69, 72],
+      data: { labels: [], datasets: [{ label: "BPM", data: [],
         borderColor: "#f0566a", backgroundColor: "rgba(240,86,106,.12)", fill: true }] },
       options: { ...base, scales: { ...base.scales, y: { ...base.scales.y, suggestedMin: 60, suggestedMax: 90 } } }
     });
-    new Chart($("#bpChart"), {
+    bpChart = new Chart($("#bpChart"), {
       type: "line",
-      data: { labels: days, datasets: [
-        { label: "Systolic", data: [118, 121, 119, 126, 122, 117, 118], borderColor: "#2d7ff9" },
-        { label: "Diastolic", data: [76, 79, 77, 82, 78, 75, 76], borderColor: "#34c38f" }] },
+      data: { labels: [], datasets: [
+        { label: "Systolic", data: [], borderColor: "#2d7ff9" },
+        { label: "Diastolic", data: [], borderColor: "#34c38f" }] },
       options: { ...base, plugins: { legend: { display: true, position: "bottom" } },
         scales: { ...base.scales, y: { ...base.scales.y, suggestedMin: 60, suggestedMax: 140 } } }
     });
   }
+
+  const setNote = (note, message, isError = false) => {
+    note.textContent = message;
+    note.style.color = isError ? "#c62d42" : "";
+  };
+  const formatDate = value => new Date(value).toLocaleString(undefined, {
+    dateStyle: "medium", timeStyle: "short"
+  });
+  const renderDashboard = items => {
+    const latest = items[0];
+    $("#latest-hr").textContent = latest ? latest.hr : "—";
+    $("#latest-bp").textContent = latest?.systolic && latest?.diastolic
+      ? `${latest.systolic}/${latest.diastolic}` : "—";
+    $("#latest-temp").textContent = latest ? Number(latest.temp).toFixed(1) : "—";
+    $("#latest-spo2").textContent = latest ? Number(latest.spo2).toFixed(1) : "—";
+    $("#dashboard-message").textContent = latest
+      ? `Latest reading: ${formatDate(latest.recorded_at)}`
+      : "No readings yet. Record your first reading below.";
+
+    const recent = $("#recent-readings");
+    recent.replaceChildren();
+    if (!items.length) {
+      const empty = document.createElement("li");
+      empty.textContent = "No readings recorded yet.";
+      recent.append(empty);
+    } else {
+      items.slice(0, 3).forEach(item => {
+        const row = document.createElement("li");
+        const details = document.createElement("div");
+        const title = document.createElement("b");
+        const date = document.createElement("small");
+        title.textContent = `Heart rate: ${item.hr} BPM · ${item.status}`;
+        date.textContent = formatDate(item.recorded_at);
+        details.append(title, date);
+        row.append(details);
+        recent.append(row);
+      });
+    }
+
+    const chronological = [...items].reverse();
+    const labels = chronological.map(item => new Date(item.recorded_at).toLocaleDateString());
+    if (hrChart) {
+      hrChart.data.labels = labels;
+      hrChart.data.datasets[0].data = chronological.map(item => item.hr);
+      hrChart.update();
+    }
+    if (bpChart) {
+      bpChart.data.labels = labels;
+      bpChart.data.datasets[0].data = chronological.map(item => item.systolic);
+      bpChart.data.datasets[1].data = chronological.map(item => item.diastolic);
+      bpChart.update();
+    }
+  };
+  const refreshDashboard = async () => {
+    const response = await window.HealthMonitorAPI.request("/history?limit=7");
+    renderDashboard(response.items);
+  };
+  const setAuthenticated = async user => {
+    $("#auth-email").textContent = user.email;
+    $("#auth-email").hidden = false;
+    $("#guest-actions").hidden = true;
+    $("#logout-btn").hidden = false;
+    $("#vitals-form").hidden = false;
+    setNote($("#api-status"), `Signed in as ${user.email}.`);
+    await refreshDashboard();
+  };
 
   /* ---------- Modals (login / register navigation) ---------- */
   let lastFocus = null;
@@ -100,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeModals(); });
 
-  /* ---------- Form validation ---------- */
+  /* ---------- API-connected forms ---------- */
   const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   const rules = {
     name: v => v.trim().length < 2 ? "Enter your name (at least 2 characters)." : "",
@@ -111,7 +177,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const setError = (input, msg) => {
     input.classList.toggle("invalid", !!msg);
     input.setAttribute("aria-invalid", !!msg);
-    input.parentElement.querySelector(".err").textContent = msg;
+    const error = input.parentElement.querySelector(".err");
+    if (error) error.textContent = msg;
   };
   const check = (input, form) => {
     let msg = "";
@@ -123,22 +190,114 @@ document.addEventListener("DOMContentLoaded", () => {
     setError(input, msg);
     return !msg;
   };
-  const messages = {
-    "contact-form": "Thanks! We will reply within one business day.",
-    "login-form": "Logged in (demo). Connect a backend to enable real sign-in.",
-    "register-form": "Account created (demo). Connect a backend to save it."
+  const apiForms = {
+    "contact-form": {
+      path: "/contact",
+      success: "Thanks! Your message has been received."
+    },
+    "login-form": { path: "/login", success: "Signed in successfully." },
+    "register-form": { path: "/register", success: "Your account has been created." }
   };
-  $$(".form").forEach(form => {
+  Object.keys(apiForms).forEach(id => {
+    const form = $("#" + id);
     $$("input, textarea", form).forEach(i => i.addEventListener("blur", () => check(i, form)));
-    form.addEventListener("submit", e => {
+    form.addEventListener("submit", async e => {
       e.preventDefault();
       const fields = $$("input, textarea", form);
       const ok = fields.map(i => check(i, form)).every(Boolean); // validate all, don't stop at first
       const note = $(".form-ok", form);
       if (!ok) { note.textContent = ""; fields.find(i => i.classList.contains("invalid")).focus(); return; }
-      note.textContent = messages[form.id];
-      form.reset();
-      // Real app: window.location.href = "dashboard.html" after a successful login/registration
+      setNote(note, "Sending...");
+      const values = Object.fromEntries(new FormData(form).entries());
+      const payload = { name: values.name, email: values.email, message: values.message };
+      if (id === "login-form") {
+        delete payload.name;
+        delete payload.message;
+        payload.password = values.password;
+      } else if (id === "register-form") {
+        delete payload.message;
+        payload.password = values.password;
+      }
+
+      try {
+        const result = await window.HealthMonitorAPI.request(apiForms[id].path, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+        if (id === "login-form" || id === "register-form") {
+          window.HealthMonitorAPI.setToken(result.access_token);
+          await setAuthenticated(result.user);
+        }
+        setNote(note, apiForms[id].success);
+        form.reset();
+      } catch (error) {
+        setNote(note, error.message, true);
+      }
     });
   });
+
+  $("#vitals-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const note = $(".form-ok", form);
+    const values = Object.fromEntries(new FormData(form).entries());
+    const payload = {};
+    ["hr", "spo2", "temp", "systolic", "diastolic", "resp"].forEach(key => {
+      if (values[key] !== "") payload[key] = Number(values[key]);
+    });
+    setNote(note, "Saving reading...");
+    try {
+      await window.HealthMonitorAPI.request("/vitals", {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+      form.reset();
+      await refreshDashboard();
+      setNote(note, "Reading saved.");
+    } catch (error) {
+      setNote(note, error.message, true);
+    }
+  });
+
+  $("#logout-btn").addEventListener("click", async () => {
+    const note = $("#api-status");
+    try {
+      await window.HealthMonitorAPI.request("/logout", { method: "POST" });
+      window.HealthMonitorAPI.clearToken();
+      $("#auth-email").hidden = true;
+      $("#logout-btn").hidden = true;
+      $("#guest-actions").hidden = false;
+      $("#vitals-form").hidden = true;
+      renderDashboard([]);
+      setNote(note, "You have been signed out.");
+    } catch (error) {
+      setNote(note, error.message, true);
+    }
+  });
+
+  const initializeApi = async () => {
+    const note = $("#api-status");
+    const token = window.HealthMonitorAPI.getToken();
+    if (!token) {
+      try {
+        await window.HealthMonitorAPI.request("/health");
+        if (!window.HealthMonitorAPI.getToken()) {
+          setNote(note, "Backend connected. Sign in to view and save your readings.");
+        }
+      } catch (error) {
+        setNote(note, error.message, true);
+      }
+      return;
+    }
+    try {
+      const user = await window.HealthMonitorAPI.request("/me");
+      await setAuthenticated(user);
+      setNote(note, `Signed in as ${user.email}.`);
+    } catch (error) {
+      if (error.status === 401) window.HealthMonitorAPI.clearToken();
+      $("#vitals-form").hidden = true;
+      setNote(note, error.message, true);
+    }
+  };
+  initializeApi();
 });

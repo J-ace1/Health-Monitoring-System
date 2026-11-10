@@ -1,0 +1,4 @@
+__pycache__/
+*.py[cod]
+health_monitor.sqlite3
+health_monitor.sqlite3-*

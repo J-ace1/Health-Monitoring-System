@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="images/img1.png">
+    <title>HealthMonitor | Settings</title>
+    <script src="theme.js"></script>
+    <link rel="stylesheet" href="contact.css">
+    <link rel="stylesheet" href="settings.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header class="main-header">
+        <nav class="nav-container">
+            <div class="logo"><a href="index.html" style="text-decoration:none;color:inherit;">🩺 Vital<span>AI</span></a></div>
+            <ul class="nav-links" id="nav-menu">
+                <li><a href="index.html">Dashboard</a></li>
+                <li><a href="history.html">History</a></li>
+                <li><a href="settings.html" class="active">Settings</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="header-controls">
+                <button id="theme-toggle" aria-label="Toggle Theme" class="control-btn">
+                    <i data-lucide="moon" class="moon-icon"></i>
+                    <i data-lucide="sun" class="sun-icon" hidden></i>
+                </button>
+                <button class="mobile-toggle control-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="dashboard-container">
+        <section class="card">
+            <h2>Health alert settings</h2>
+            <p>Choose the heart-rate threshold that triggers a high-rate alert on your readings.</p>
+            <form id="settings-form">
+                <div class="form-group">
+                    <label for="max-hr">Maximum heart rate alert (BPM)</label>
+                    <input id="max-hr" name="max_hr" type="number" min="60" max="220" required>
+                </div>
+                <button class="action-btn" type="submit">Save settings</button>
+                <p id="settings-status" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+    </main>
+
+    <script src="api.js"></script>
+    <script src="settings.js"></script>
+</body>
+</html>

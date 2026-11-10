@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="images/img1.png">
     <title>VitalAI | Contact Us</title>
+    <script src="theme.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="contact.css">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -19,7 +20,13 @@
                 <li><a href="settings.html">Settings</a></li>
                 <li><a href="contact.html" class="active">Contact</a></li>
             </ul>
-            <button class="mobile-toggle" id="mobile-menu-btn"><i data-lucide="menu"></i></button>
+            <div class="header-controls">
+                <button id="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">
+                    <i data-lucide="moon" class="moon-icon"></i>
+                    <i data-lucide="sun" class="sun-icon" hidden></i>
+                </button>
+                <button class="mobile-toggle" id="mobile-menu-btn" aria-label="Toggle menu"><i data-lucide="menu"></i></button>
+            </div>
         </nav>
     </header>
 
@@ -38,12 +45,12 @@
                 </div>
             </div>
 
-            <form action="https://formsubmit.co/nathankimutai13@gmail.com" method="POST" class="contact-form">
-                 <input type="text" name="name" placeholder="Name" required>
-                 <input type="email" name="email" placeholder="Email" required>
-                <textarea name="message" placeholder="Message" required></textarea>
-    
+            <form id="contact-form" class="contact-form">
+                <input type="text" name="name" placeholder="Name" minlength="2" maxlength="100" required>
+                <input type="email" name="email" placeholder="Email" maxlength="254" required>
+                <textarea name="message" placeholder="Message" minlength="10" maxlength="5000" required></textarea>
                 <button type="submit" class="action-btn">Send Message</button>
+                <p id="contact-status" role="status" aria-live="polite"></p>
             </form>
         </section>
     </main>
@@ -91,14 +98,7 @@
         </div>
     </footer>
 
-    <script>
-        lucide.createIcons();
-        // Mobile Menu Toggle
-        const mobileBtn = document.getElementById('mobile-menu-btn');
-        const navMenu = document.getElementById('nav-menu');
-        mobileBtn.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-    </script>
+    <script src="api.js"></script>
+    <script src="contact.js"></script>
 </body>
 </html>

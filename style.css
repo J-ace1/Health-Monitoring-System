@@ -17,6 +17,7 @@
 
 /* ===== Base ===== */
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; scroll-padding-top: var(--nav-h); }
 body { margin: 0; font: 400 1rem/1.65 "Poppins", system-ui, sans-serif; color: var(--text); background: var(--white); }
 h1, h2, h3, h4 { color: var(--navy); line-height: 1.2; margin: 0 0 .5rem; }
@@ -54,6 +55,10 @@ img, svg { max-width: 100%; }
 .nav-links a:not(.btn) { font-weight: 500; font-size: .95rem; padding: .25rem 0; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s; }
 .nav-links a:hover, .nav-links a.active { color: var(--blue); border-color: var(--blue); }
 .nav-auth { display: flex; gap: .5rem; margin-left: .5rem; }
+.nav-auth #guest-actions { display: flex; gap: .5rem; }
+.theme-toggle { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 50%; background: #fff; color: var(--navy); cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+.theme-toggle:hover { border-color: var(--blue); color: var(--blue); }
+.theme-toggle [hidden] { display: none; }
 .menu-btn { display: none; background: none; border: 0; color: var(--navy); cursor: pointer; padding: .5rem; }
 
 /* ===== Hero ===== */
@@ -197,3 +202,30 @@ img, svg { max-width: 100%; }
   .reveal { opacity: 1; transform: none; }
   .ecg polyline { stroke-dashoffset: 0; }
 }
+
+/* Dark theme for the homepage and shared marketing sections. */
+body.dark-mode { color: #c8d3e2; background: #101722; }
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4,
+body.dark-mode .logo, body.dark-mode .hero-stats strong,
+body.dark-mode .device-top, body.dark-mode .bpm strong,
+body.dark-mode .mini b, body.dark-mode .activity b { color: #edf4fc; }
+body.dark-mode .site-header { background: rgba(16, 23, 34, .92); }
+body.dark-mode .nav-links { background: #151f2d; }
+body.dark-mode .nav-links a:not(.btn), body.dark-mode .nav-auth .btn-ghost { color: #c8d3e2; }
+body.dark-mode .nav-auth .btn-ghost:hover { background: #263449; }
+body.dark-mode .theme-toggle { background: #182332; border-color: #3a4b60; color: #edf4fc; }
+body.dark-mode .hero { background: linear-gradient(160deg, #17263a 0%, #101722 70%); }
+body.dark-mode .section.alt { background: #151f2d; }
+body.dark-mode .device, body.dark-mode .chip, body.dark-mode .card,
+body.dark-mode .steps li, body.dark-mode .stat { background: #1a2635; border-color: #344356; color: #c8d3e2; }
+body.dark-mode .mini div, body.dark-mode .feature [data-lucide] { background: #263449; }
+body.dark-mode .dash { background: linear-gradient(180deg, #182536, #131d2b); border-color: #344356; }
+body.dark-mode .form label { color: #d6e0ed; }
+body.dark-mode .form input, body.dark-mode .form textarea { background: #111a26; border-color: #3a4b60; color: #edf4fc; }
+body.dark-mode .form input::placeholder, body.dark-mode .form textarea::placeholder { color: #9aaabd; }
+body.dark-mode .modal-box { background: #1a2635; color: #c8d3e2; }
+body.dark-mode .modal-close { color: #c8d3e2; }
+body.dark-mode .modal-close:hover { background: #263449; }
+body.dark-mode .footer { background: #0b111a; }
+body.dark-mode .why { background: #1a2635; }
+body.dark-mode .why > [data-lucide] { background: #263449; }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="images/img1.png">
     <title>VitalAI | History</title>
+    <script src="theme.js"></script>
     <link rel="stylesheet" href="contact.css">
     <link rel="stylesheet" href="history.css">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -30,8 +31,8 @@
 
         <div class="header-controls">
             <button id="theme-toggle" aria-label="Toggle Theme" class="control-btn">
-                <i data-lucide="sun" class="sun-icon"></i>
                 <i data-lucide="moon" class="moon-icon"></i>
+                <i data-lucide="sun" class="sun-icon" hidden></i>
             </button>
             <button class="mobile-toggle control-btn" id="mobile-menu-btn">
                 <i data-lucide="menu"></i>
@@ -46,6 +47,7 @@
                 <h2>Scan History</h2>
                 <button id="clear-history" class="action-btn" style="width: auto; padding: 10px 20px; background: #ff4b4b;">Clear All</button>
             </div>
+            <p id="history-status" role="status" aria-live="polite"></p>
             
             <table class="history-table">
                 <thead>
@@ -62,6 +64,7 @@
         </section>
     </main>
 
+    <script src="api.js"></script>
     <script src="history.js"></script>
 </body>
     <footer>

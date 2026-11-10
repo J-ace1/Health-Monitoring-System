@@ -53,57 +53,60 @@ The system follows a client-server architecture:
 
 ---
 
-## Installation Guide
+## Run locally
 
 ### Prerequisites
 
 * Python 3.x installed
 * Web browser (Chrome, Firefox, etc.)
-* Package manager (pip)
+* VS Code Live Server extension (or another static HTTP server)
 
 ### Steps
 
-1. Clone the repository:
+1. Create and activate a virtual environment:
 
    ```bash
-   git clone https://github.com/your-username/health-monitoring-system.git
-   cd health-monitoring-system
+   python -m venv .venv
+   source .venv/bin/activate       # Linux/macOS
+   .venv\Scripts\activate          # Windows
    ```
 
-2. Create a virtual environment:
-
-   ```bash
-   python -m venv venv
-   source venv/bin/activate   # On Linux/Mac
-   venv\Scripts\activate    # On Windows
-   ```
-
-3. Install dependencies:
+2. Install the backend dependencies:
 
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Run the application:
+3. Start the website and API from the project directory:
 
    ```bash
-   python app.py
+   python main.py
    ```
 
-5. Open your browser and go to:
+   Open `http://127.0.0.1:8000` for the website. Interactive API
+   documentation is available at `http://127.0.0.1:8000/docs`.
 
-   ```
-   http://127.0.0.1:5000/
-   ```
+The same server serves the frontend and API, so no separate frontend server is
+required. If you prefer VS Code Live Server or another static server, you can
+still use it to serve the frontend separately:
 
+4. Visit the site, register, and sign in. You can then save readings from the
+   dashboard, view them on the History page, and change the alert threshold on
+   the Settings page. The Contact form sends messages to the API.
+
+The API stores data in `health_monitor.sqlite3` beside `main.py`. Keep this
+file private; it contains account and health data. The frontend defaults to
+the API at `http://127.0.0.1:8000`. To use another API URL, define
+`window.HEALTHMONITOR_API_URL` before loading `api.js`.
 ---
 
 ## Usage
 
-* Register a new account or log in
-* Enter health data through forms
-* View your dashboard for analytics
-* Monitor trends and receive alerts
+* Register or log in from the homepage.
+* Record vital readings on the dashboard.
+* Review and clear your saved readings on the History page.
+* Update your heart-rate alert threshold on the Settings page.
+* Submit questions using either Contact form.
 
 ---
 
@@ -111,32 +114,31 @@ The system follows a client-server architecture:
 
 ```
 health-monitoring-system/
-│
-├── backend/
-│   ├── app.py
-│   ├── models.py
-│   ├── routes.py
-│
-├── frontend/
-│   ├── index.html
-│   ├── styles.css
-│   ├── script.js
-│
-├── database/
-│   ├── db.sqlite3
-│
+├── main.py
+├── api.js
+├── index.html
+├── script.js
+├── style.css
+├── history.html
+├── history.js
+├── settings.html
+├── settings.js
+├── contact.html
+├── contact.js
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## API Endpoints (Example)
+## API Endpoints
 
-* `POST /register` – Register a new user
-* `POST /login` – Authenticate user
-* `POST /add-data` – Add health data
-* `GET /data` – Retrieve health records
+* `POST /register` and `POST /login` – Create an account and sign in
+* `POST /logout` and `GET /me` – End a session and read the current profile
+* `POST /vitals` and `GET /vitals` – Save a reading and retrieve the latest reading
+* `GET /history` and `DELETE /history` – Read or clear the signed-in user's readings
+* `GET /settings` and `POST /update_settings` – Read or update the heart-rate alert threshold
+* `POST /contact` – Submit a contact message
 
 ---
 
